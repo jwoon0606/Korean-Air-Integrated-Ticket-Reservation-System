@@ -113,7 +113,7 @@ public class LoginController {
                     }
                 }
             }
-            System.out.println("Data loaded successfully\n");
+            System.out.println("Data loaded successfully.\n");
         } catch (Exception e) {
             System.out.println("Failed to load data: " + e.getMessage() + "\n");
         }
