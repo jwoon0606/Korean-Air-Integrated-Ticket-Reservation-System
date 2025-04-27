@@ -23,6 +23,8 @@ public class Main {
             System.out.println("menu");
             System.out.println("1. Login");
             System.out.println("2. Sign Up");
+            System.out.println("3. Travel Agency Login");
+            System.out.println("4. Travel Agency Sign Up");
             System.out.println("0. End Program");
             System.out.print("=> ");
 
@@ -35,6 +37,15 @@ public class Main {
                 case 2:
                     System.out.println();
                     loginController.signUp();
+                    break;
+
+                case 3:
+                    System.out.println();
+                    loginController.travelAgencLogin();
+                    break;
+                case 4:
+                    System.out.println();
+                    loginController.travelAgencSignUp();
                     break;
                 case 0:
                     running = false;
