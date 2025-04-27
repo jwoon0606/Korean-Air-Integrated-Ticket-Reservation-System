@@ -27,42 +27,45 @@ public class RegisteredPassenger implements User{
         deleted = false;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
-
+    @Override
     public void setName(String name) {
         this.name = name;
     }
-
+    @Override
     public String getEmail() {
         return email;
     }
-
+    @Override
     public void setEmail(String email) {
         this.email = email;
     }
-
+    @Override
     public String getPassword() {
         return password;
     }
-
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
-
+    @Override
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
+    @Override
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -82,6 +85,7 @@ public class RegisteredPassenger implements User{
     public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
     }
+
 
     public String getPassportNumber() {
         return passportNumber;
