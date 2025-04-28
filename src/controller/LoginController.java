@@ -38,6 +38,14 @@ public class LoginController {
         return currentUser != null || currentAgency != null;
     }
     
+    public RegisteredPassenger getCurrentUser() {
+        return currentUser;
+    }
+
+    public TravelAgency getCurrentAgency() {
+        return currentAgency;
+    }
+    
 
     public void signUp() {
         System.out.println("Sign Up Page");
@@ -124,12 +132,31 @@ public class LoginController {
 
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email) && agency.getPassword().equals(password)) {
-                System.out.println("Welcome, " + agency.getAgencyName() + "\n");
+                System.out.println("Welcome, Agency: " + agency.getAgencyName() + "\n");
                 currentAgency = agency;
                 return;
             }
         }
         System.out.println("Login failed.\n");
+    }
+    
+    // 25.04.28 :: PSY - Show User details
+    public void displayUserInfo() {
+        if (currentUser != null) {
+            System.out.println("User Info:");
+            System.out.println("Name: " + currentUser.getName());
+            System.out.println("Email: " + currentUser.getEmail());
+            System.out.println("Phone: " + currentUser.getPhoneNumber());
+            System.out.println("Gender: " + currentUser.getGender());
+            System.out.println("Birth Date: " + currentUser.getBirthDate() + "\n");
+        } else if (currentAgency != null) {
+            System.out.println("Travel Agency Info:");
+            System.out.println("Agency Name: " + currentAgency.getAgencyName());
+            System.out.println("Email: " + currentAgency.getEmail());
+            System.out.println("Phone: " + currentAgency.getPhoneNumber() + "\n");
+        } else {
+            System.out.println("No user is logged in. \n");
+        }
     }
 
     public void saveData() {

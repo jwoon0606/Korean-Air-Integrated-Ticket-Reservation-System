@@ -1,6 +1,5 @@
 package controller;
 
-import javax.swing.*;
 import java.util.Scanner;
 import user.GuestPassenger;
 import user.User;
@@ -22,42 +21,72 @@ public class Main {
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
         while(running) {
             System.out.println("menu");
-            System.out.println("1. Login");
-            System.out.println("2. Sign Up");
-            System.out.println("3. Travel Agency Login");
-            System.out.println("4. Travel Agency Sign Up");
-            if (loginController.isLoggedIn()) {  // 25.04.28 :: PSY - Only show logout if logged in
+            
+         // 25.04.28 :: PSY - If not login, menu
+            if (!loginController.isLoggedIn()) {
+                System.out.println("1. Login");
+                System.out.println("2. Sign Up");
+                System.out.println("3. Travel Agency Login");
+                System.out.println("4. Travel Agency Sign Up");
+            } else {
+                // If login, menu
                 System.out.println("5. Logout");
+                System.out.println("6. View User Info");
             }
+
+            
             System.out.println("0. End Program");
             System.out.print("=> ");
 
             int menu = sc.nextInt();
             switch (menu) {
-                case 1:
+            case 1:
+                if (!loginController.isLoggedIn()) {
                     System.out.println();
                     loginController.login();
-                    break;
-                case 2:
+                } else {
+                    System.out.println("You are already logged in.");
+                }
+                break;
+            case 2:
+                if (!loginController.isLoggedIn()) {
                     System.out.println();
                     loginController.signUp();
-                    break;
-
-                case 3:
+                } else {
+                    System.out.println("You are already logged in.");
+                }
+                break;
+            case 3:
+                if (!loginController.isLoggedIn()) {
                     System.out.println();
                     loginController.travelAgencLogin();
-                    break;
-                case 4:
+                } else {
+                    System.out.println("You are already logged in.");
+                }
+                break;
+            case 4:
+                if (!loginController.isLoggedIn()) {
                     System.out.println();
                     loginController.travelAgencSignUp();
-                    break;
-                case 5: // 25.04.28 :: PSY - login Check out
-                    if (loginController.isLoggedIn()) {
-                        loginController.logout();
-                    } else {
-                        System.out.println("No user is logged in.\n");
-                    }
-                    break;
+                } else {
+                    System.out.println("You are already logged in.");
+                }
+                break;
+            case 5:
+                if (loginController.isLoggedIn()) {
+                    loginController.logout();
+                    System.out.println("Logged out successfully.");
+                } else {
+                    System.out.println("You are not logged in.");
+                }
+                break;
+            case 6:
+                if (loginController.isLoggedIn()) {
+                    loginController.displayUserInfo();
+                } else {
+                    System.out.println("You are not logged in.");
+                }
+                break;
                 case 0:
                     running = false;
                     break;
