@@ -1,9 +1,10 @@
 package controller;
 
+import javax.swing.*;
+import java.util.Scanner;
 import user.GuestPassenger;
 import user.User;
 
-import java.util.Scanner;
 
 public class Main {
     Scanner sc = new Scanner(System.in);
@@ -25,6 +26,9 @@ public class Main {
             System.out.println("2. Sign Up");
             System.out.println("3. Travel Agency Login");
             System.out.println("4. Travel Agency Sign Up");
+            if (loginController.isLoggedIn()) {  // 25.04.28 :: PSY - Only show logout if logged in
+                System.out.println("5. Logout");
+            }
             System.out.println("0. End Program");
             System.out.print("=> ");
 
@@ -47,6 +51,13 @@ public class Main {
                     System.out.println();
                     loginController.travelAgencSignUp();
                     break;
+                case 5: // 25.04.28 :: PSY - login Check out
+                    if (loginController.isLoggedIn()) {
+                        loginController.logout();
+                    } else {
+                        System.out.println("No user is logged in.\n");
+                    }
+                    break;
                 case 0:
                     running = false;
                     break;
@@ -55,4 +66,7 @@ public class Main {
 
         System.out.println("Program terminated.");
     }
+    
+    
+    
 }

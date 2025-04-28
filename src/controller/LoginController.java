@@ -6,9 +6,20 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/** 25.04.27 final modification :: PSY
+* NJW(Creator), PMC, PSY
+* Login business logic controller
+* login() + isLoggedin(), logout() // Add
+* signUp(RegisteredPassenger/TravelAgency) 
+*/
+
+
+
 public class LoginController {
     ArrayList<RegisteredPassenger> userList;
     ArrayList<TravelAgency> agencyList;
+    private RegisteredPassenger currentUser = null; // 일반회원 로그인 구분
+    private TravelAgency currentAgency = null; // 여행사회원 로그인 구분
     private final Scanner sc = new Scanner(System.in);
     final String fileName = "src/file/UserList.txt";
     final String agencyFileName = "src/file/AgencyList.txt";
@@ -21,12 +32,27 @@ public class LoginController {
         loadData();
         loadAgencyData();
     }
+    
+    // 25.04.28 :: PSY - Method to check if a user or agency is logged in
+    public boolean isLoggedIn() {
+        return currentUser != null || currentAgency != null;
+    }
+    
 
     public void signUp() {
         System.out.println("Sign Up Page");
         int id = ++this.id;
         System.out.print("name? "); String name = sc.nextLine();
         System.out.print("email? "); String email = sc.nextLine();
+        
+     // 25.04.28 :: PSY - Check if the email already exists in the userList
+        for (RegisteredPassenger user : userList) {
+            if (user.getEmail().equals(email)) {
+                System.out.println("This email is already registered. Please use a different email.\n");
+                return;
+            }
+        }
+        
         System.out.print("password? "); String password = sc.nextLine();
         System.out.print("phone number? "); String phoneNumber = sc.nextLine();
         System.out.print("gender? "); String gender = sc.nextLine();
@@ -47,10 +73,24 @@ public class LoginController {
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 System.out.println("Welcome, " + user.getName() + "\n");
+                currentUser = user; // 
                 return;
             }
         }
         System.out.println("Login failed.\n");
+    }
+    
+    // 25.04.28 :: PSY - logout by using current state values
+    public void logout() {
+        if (currentUser != null) {
+            System.out.println("Logged out successfully, " + currentUser.getName() + ".\n");
+            currentUser = null;  // Clear current user
+        } else if (currentAgency != null) {
+            System.out.println("Logged out successfully, " + currentAgency.getAgencyName() + ".\n");
+            currentAgency = null;  // Clear current agency
+        } else {
+            System.out.println("No user or agency is logged in.\n");
+        }
     }
 
     public void travelAgencSignUp() {
@@ -58,6 +98,15 @@ public class LoginController {
         int id = ++this.agencyId;
         System.out.print("Agency name? "); String agencyName = sc.nextLine();
         System.out.print("Email? "); String email = sc.nextLine();
+        
+     // 25.04.28 :: PSY - Check if the email already exists in the agencyList
+        for (TravelAgency agency : agencyList) {
+            if (agency.getEmail().equals(email)) {
+                System.out.println("This email is already registered. Please use a different email.\n");
+                return;
+            }
+        }
+        
         System.out.print("Password? "); String password = sc.nextLine();
         System.out.print("Phone number? "); String phoneNumber = sc.nextLine();
 
@@ -76,6 +125,7 @@ public class LoginController {
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email) && agency.getPassword().equals(password)) {
                 System.out.println("Welcome, " + agency.getAgencyName() + "\n");
+                currentAgency = agency;
                 return;
             }
         }
