@@ -17,6 +17,7 @@ public class Main {
     public void runProgram() {
         boolean running = true;
         LoginController loginController = new LoginController();
+        ReservationController reservationController = new ReservationController();
 
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
         while(running) {
@@ -28,6 +29,7 @@ public class Main {
                 System.out.println("2. Sign Up");
                 System.out.println("3. Travel Agency Login");
                 System.out.println("4. Travel Agency Sign Up");
+                System.out.println("7. Book Flights");
             } else {
                 // If login, menu
                 System.out.println("5. Logout");
@@ -87,9 +89,12 @@ public class Main {
                     System.out.println("You are not logged in.");
                 }
                 break;
-                case 0:
-                    running = false;
-                    break;
+            case 7:
+                reservationController.selectFlight();
+                break;
+            case 0:
+                running = false;
+                break;
             }
         }
 

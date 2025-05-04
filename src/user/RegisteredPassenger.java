@@ -1,6 +1,6 @@
 package user;
 
-import entity.Mileage;
+import dto.Mileage;
 
 public class RegisteredPassenger implements User{
     private int id;
