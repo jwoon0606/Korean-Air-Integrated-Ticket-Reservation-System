@@ -10,7 +10,7 @@ public class FlightController {
     private List<Flight> flights = new ArrayList<>();
 
     public FlightController() {
-        loadFlightsFromFile("FlightList.txt", "SeatList.txt");
+        loadFlightsFromFile("src/file/FlightList.txt", "src/file/SeatList.txt");
     }
 
     public List<Flight> getAvailableFlights() {

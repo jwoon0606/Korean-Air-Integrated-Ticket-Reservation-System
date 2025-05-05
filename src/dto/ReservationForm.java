@@ -24,9 +24,9 @@ public class ReservationForm {
 
     private String registerGuestPassword;
 
-    private ArrayList<Flight> flights;
+    private ArrayList<ReservedFlight> reservedFlights;
 
-    public ReservationForm(String id, String name, String gender, String birthDate, String carrierForMileageAccumulation, String membershipNumber, String countryCode, String mobileNumber, String email, String language, String registerGuestPassword, ArrayList<Flight> flights) {
+    public ReservationForm(String id, String name, String gender, String birthDate, String carrierForMileageAccumulation, String membershipNumber, String countryCode, String mobileNumber, String email, String language, String registerGuestPassword, ArrayList<ReservedFlight> reservedFlights) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -38,7 +38,7 @@ public class ReservationForm {
         this.email = email;
         Language = language;
         this.registerGuestPassword = registerGuestPassword;
-        this.flights = flights;
+        this.reservedFlights = reservedFlights;
     }
 
     public String getId() {
@@ -129,11 +129,11 @@ public class ReservationForm {
         this.registerGuestPassword = registerGuestPassword;
     }
 
-    public ArrayList<Flight> getFlights() {
-        return flights;
+    public ArrayList<ReservedFlight> getReservedFlights() {
+        return reservedFlights;
     }
 
-    public void setFlights(ArrayList<Flight> flights) {
-        this.flights = flights;
+    public void setReservedFlightsFlights(ArrayList<ReservedFlight> reservedFlights) {
+        this.reservedFlights = reservedFlights;
     }
 }

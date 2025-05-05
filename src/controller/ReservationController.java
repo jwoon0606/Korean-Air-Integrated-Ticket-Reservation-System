@@ -1,10 +1,18 @@
 package controller;
 
-import java.util.List;
-import java.util.Scanner;
+import dto.Flight;
+import dto.ReservationForm;
+import dto.ReservedFlight;
+import dto.Seat;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class ReservationController {
     private final Scanner scanner;
+    private final FlightController flightController;
     private static final List<List<String>> COUNTRY_DATA = List.of(
             List.of("Republic of Korea"),
             List.of("China", "Japan", "Mongolia"),
@@ -20,9 +28,28 @@ public class ReservationController {
 
     public ReservationController() {
         scanner = new Scanner(System.in);
+        flightController = new FlightController();
     }
 
-    public String selectFlight() {
+    public void bookFlight() {
+        ArrayList<ReservedFlight> flights = selectFlight();
+
+        System.out.println("\nWould you like to proceed with reservation? (yes/no)");
+        scanner.nextLine(); // consume newline
+        String proceed = scanner.nextLine().trim();
+
+        if (!proceed.equalsIgnoreCase("yes")) {
+            System.out.println("Reservation cancelled.");
+            return;
+        }
+
+        ReservationForm form = getReservationDetails(flights);
+        saveReservationToFile(form);
+
+        System.out.println("\nReservation completed and saved successfully!");
+    }
+
+    public ArrayList<ReservedFlight> selectFlight() {
         System.out.println("\n* Select Flight *");
         System.out.println("** Select Country **");
 
@@ -45,7 +72,83 @@ public class ReservationController {
         String[] departureDates = inputTravelDates();
         String cabinClass = selectCabinClass();
 
-        return result;
+        Flight departureFlight = flightController.findFlight(departureCountry, arrivalCountry);
+        if (departureFlight != null && departureFlight.getDepartureDate().equals(departureDates[0])) {
+            Optional<Seat> seat = departureFlight.getSeats().stream()
+                    .filter(s -> s.getCabinClass().equalsIgnoreCase(cabinClass))
+                    .findFirst();
+            if (seat.isPresent()) {
+                System.out.println("\n[Departure Flight]");
+                System.out.println("Date: " + departureDates[0]);
+                System.out.println("Available seats for " + cabinClass + ": " + seat.get().getAvailableSeats());
+            } else {
+                System.out.println("No seat information found for class: " + cabinClass + " (departure)");
+            }
+        } else {
+            System.out.println("No matching departure flight found.");
+        }
+
+        Flight returnFlight = flightController.findFlight(arrivalCountry, departureCountry);
+        if (returnFlight != null && returnFlight.getDepartureDate().equals(departureDates[1])) {
+            Optional<Seat> seat = returnFlight.getSeats().stream()
+                    .filter(s -> s.getCabinClass().equalsIgnoreCase(cabinClass))
+                    .findFirst();
+            if (seat.isPresent()) {
+                System.out.println("\n[Return Flight]");
+                System.out.println("Date: " + departureDates[1]);
+                System.out.println("Available seats for " + cabinClass + ": " + seat.get().getAvailableSeats());
+            } else {
+                System.out.println("No seat information found for class: " + cabinClass + " (return)");
+            }
+        } else {
+            System.out.println("No matching return flight found.");
+        }
+
+        ArrayList<ReservedFlight> flights = new ArrayList<>();
+
+        if (departureFlight != null && returnFlight != null &&
+                departureFlight.getDepartureDate().equals(departureDates[0]) &&
+                returnFlight.getDepartureDate().equals(departureDates[1])) {
+
+            Optional<Seat> departureSeatOpt = departureFlight.getSeats().stream()
+                    .filter(s -> s.getCabinClass().equalsIgnoreCase(cabinClass))
+                    .findFirst();
+            Optional<Seat> returnSeatOpt = returnFlight.getSeats().stream()
+                    .filter(s -> s.getCabinClass().equalsIgnoreCase(cabinClass))
+                    .findFirst();
+
+            if (departureSeatOpt.isPresent() && returnSeatOpt.isPresent()) {
+                Seat departureSeat = departureSeatOpt.get();
+                Seat returnSeat = returnSeatOpt.get();
+
+                System.out.print("\nHow many people would you like to reserve seats for? ");
+                int numberOfPeople = scanner.nextInt();
+
+                if (numberOfPeople <= departureSeat.getAvailableSeats()
+                        && numberOfPeople <= returnSeat.getAvailableSeats()) {
+                    System.out.println("Reservation possible for " + numberOfPeople + " people.");
+
+                    ReservedFlight departureReservedFlight = new ReservedFlight();
+                    departureReservedFlight.setFlight(departureFlight);
+                    departureReservedFlight.setCabinClass(cabinClass);
+                    departureReservedFlight.setSeatCount(numberOfPeople);
+
+                    ReservedFlight returnReservedFlight = new ReservedFlight();
+                    returnReservedFlight.setFlight(returnFlight);
+                    returnReservedFlight.setCabinClass(cabinClass);
+                    returnReservedFlight.setSeatCount(numberOfPeople);
+
+                    flights.add(departureReservedFlight);
+                    flights.add(returnReservedFlight);
+                } else {
+                    System.out.println("Not enough seats available in " + cabinClass + " class.");
+                    System.out.println("Departure available: " + departureSeat.getAvailableSeats());
+                    System.out.println("Return available: " + returnSeat.getAvailableSeats());
+                }
+            }
+        }
+
+        return flights;
     }
 
     private int selectContinent() {
@@ -195,66 +298,72 @@ public class ReservationController {
         };
     }
 
-    /*
-    public ReservationForm getReservationDetails() {
-        System.out.println("Input Reservation Data.");
+    public ReservationForm getReservationDetails(ArrayList<ReservedFlight> reservedFlights) {
+        System.out.println("\n** Passenger Details **");
 
-        System.out.print("ID: ");
-        String id = scanner.nextLine();
+        String id = UUID.randomUUID().toString();  // 시스템이 자동으로 ID 생성
 
-        System.out.print("이름: ");
+        System.out.print("Enter your full name: ");
         String name = scanner.nextLine();
 
-        System.out.print("성별 (예: M/F): ");
+        System.out.print("Enter your gender (M/F): ");
         String gender = scanner.nextLine();
 
-        System.out.print("생년월일 (YYYY-MM-DD): ");
+        System.out.print("Enter your birth date (YYYY-MM-DD): ");
         String birthDate = scanner.nextLine();
 
-        System.out.print("적립 항공사: ");
+        System.out.print("Enter your mileage airline: ");
         String carrierForMileageAccumulation = scanner.nextLine();
 
-        System.out.print("회원 번호: ");
+        System.out.print("Enter your membership number: ");
         String membershipNumber = scanner.nextLine();
 
-        System.out.print("국가 코드: ");
+        System.out.print("Enter your country code (e.g., 82): ");
         String countryCode = scanner.nextLine();
 
-        System.out.print("휴대폰 번호: ");
+        System.out.print("Enter your mobile number: ");
         String mobileNumber = scanner.nextLine();
 
-        System.out.print("이메일: ");
+        System.out.print("Enter your email: ");
         String email = scanner.nextLine();
 
-        System.out.print("언어: ");
+        System.out.print("Preferred language: ");
         String language = scanner.nextLine();
 
-        System.out.print("예약 비밀번호 (비회원인 경우만 입력): ");
+        System.out.print("Enter guest password: ");
         String registerGuestPassword = scanner.nextLine();
 
-        ArrayList<Flight> flights = new ArrayList<>();
-        System.out.print("예약할 항공편 수: ");
-        int flightCount = Integer.parseInt(scanner.nextLine());
+        System.out.println("\nYour reservation ID is: " + id);
+        System.out.println("Please keep this ID to check or manage your reservation later.");
 
-        for (int i = 0; i < flightCount; i++) {
-            System.out.println("예약할 항공편 " + (i + 1) + " 정보를 입력하세요.");
-            System.out.print("항공편 번호: ");
-            String flightNumber = scanner.nextLine();
-
-            System.out.print("출발지: ");
-            String departure = scanner.nextLine();
-
-            System.out.print("도착지: ");
-            String destination = scanner.nextLine();
-
-            System.out.print("출발일 (YYYY-MM-DD): ");
-            String departureDate = scanner.nextLine();
-
-            Flight flight = new Flight(flightNumber, departure, destination, departureDate, "");
-            flights.add(flight);
-        }
-
-        return new ReservationForm(id, name, gender, birthDate, carrierForMileageAccumulation, membershipNumber, countryCode, mobileNumber, email, language, registerGuestPassword, flights);
+        return new ReservationForm(
+                id, name, gender, birthDate,
+                carrierForMileageAccumulation, membershipNumber,
+                countryCode, mobileNumber, email, language,
+                registerGuestPassword, reservedFlights
+        );
     }
-     */
+
+
+    private void saveReservationToFile(ReservationForm form) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/file/ReservationList.txt", true))) {
+            writer.write("Reservation ID: " + form.getId() + "\n");
+            writer.write("Passenger Name: " + form.getName() + "\n");
+            writer.write("Birth Date: " + form.getBirthDate() + "\n");
+            writer.write("Gender: " + form.getGender() + "\n");
+            writer.write("Contact: +" + form.getCountryCode() + " " + form.getMobileNumber() + ", " + form.getEmail() + "\n");
+            writer.write("Language: " + form.getLanguage() + "\n");
+
+            for (ReservedFlight rf : form.getReservedFlights()) {
+                Flight flight = rf.getFlight();
+                writer.write("Flight: " + flight.getFlightNumber() + ", " + flight.getDepartureDate() + ", "
+                        + flight.getDeparture() + " → " + flight.getDestination() + "\n");
+                writer.write("Class: " + rf.getCabinClass() + ", Seats Reserved: " + rf.getSeatCount() + "\n");
+            }
+
+            writer.write("----\n");
+        } catch (IOException e) {
+            System.out.println("Failed to save reservation: " + e.getMessage());
+        }
+    }
 }

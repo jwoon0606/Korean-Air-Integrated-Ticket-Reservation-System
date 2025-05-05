@@ -1,0 +1,22 @@
+Reservation ID: 1
+Passenger Name: 1
+Birth Date: 1
+Gender: 1
+Contact: +1 1, 1
+Language: 1
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: ac4c078c-f176-4a2e-9f47-586cfe9f1b9c
+Passenger Name: Nam Jongwoon
+Birth Date: 2001-06-06
+Gender: M
+Contact: +82 010-4473-5711, 22000220@handong.ac.kr
+Language: Korean
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----

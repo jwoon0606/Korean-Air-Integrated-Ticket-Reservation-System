@@ -90,7 +90,7 @@ public class Main {
                 }
                 break;
             case 7:
-                reservationController.selectFlight();
+                reservationController.bookFlight();
                 break;
             case 0:
                 running = false;
