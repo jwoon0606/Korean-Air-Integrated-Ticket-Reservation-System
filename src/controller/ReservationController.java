@@ -1,26 +1,21 @@
 package controller;
 
-import dto.Flight;
-import dto.ReservationForm;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ReservationController {
     private final Scanner scanner;
     private static final List<List<String>> COUNTRY_DATA = List.of(
-            List.of("Republic of Korea"), // 1
-            List.of("China", "Japan", "Mongolia"), // 2
-            List.of("Thailand", "Vietnam", "Indonesia", "Malaysia"), // 3
-            List.of("India", "Pakistan", "Bangladesh"), // 4
-            List.of("United Kingdom", "Germany", "France", "Italy", "Spain"), // 5
-            List.of("United States", "Canada"), // 6
-            List.of("Mexico", "Costa Rica"), // 7
-            List.of("Brazil", "Argentina", "Chile"), // 8
-            List.of("Australia", "New Zealand"), // 9
-            List.of("South Africa", "Egypt", "Nigeria") // 10
+            List.of("Republic of Korea"),
+            List.of("China", "Japan", "Mongolia"),
+            List.of("Thailand", "Vietnam", "Indonesia", "Malaysia"),
+            List.of("India", "Pakistan", "Bangladesh"),
+            List.of("United Kingdom", "Germany", "France", "Italy", "Spain"),
+            List.of("United States", "Canada"),
+            List.of("Mexico", "Costa Rica"),
+            List.of("Brazil", "Argentina", "Chile"),
+            List.of("Australia", "New Zealand"),
+            List.of("South Africa", "Egypt", "Nigeria")
     );
 
     public ReservationController() {
@@ -28,9 +23,32 @@ public class ReservationController {
     }
 
     public String selectFlight() {
-        System.out.println("** Select Flight **");
-        System.out.println("-Departure-");
+        System.out.println("\n* Select Flight *");
+        System.out.println("** Select Country **");
 
+        System.out.println("-Departure-");
+        int departureContinent = selectContinent();
+        int departureCountryIndex = showCountriesForContinent(departureContinent);
+        String departureCountry = COUNTRY_DATA.get(departureContinent - 1).get(departureCountryIndex - 1);
+        System.out.println("You selected departure: " + departureCountry);
+
+        System.out.println("\n-Arrival-");
+        int arrivalContinent = selectContinent();
+        int arrivalCountryIndex = showCountriesForContinent(arrivalContinent);
+        String arrivalCountry = COUNTRY_DATA.get(arrivalContinent - 1).get(arrivalCountryIndex - 1);
+        System.out.println("You selected arrival: " + arrivalCountry);
+
+        String result = "From " + departureCountry + " to " + arrivalCountry;
+        System.out.println(result);
+
+
+        String[] departureDates = inputTravelDates();
+        String cabinClass = selectCabinClass();
+
+        return result;
+    }
+
+    private int selectContinent() {
         int continentMaxNumber = 10;
         System.out.println("1. Republic of Korea\n" +
                 "2. Northeast Asia\n" +
@@ -42,17 +60,15 @@ public class ReservationController {
                 "8. South America\n" +
                 "9. Oceania\n" +
                 "10. Africa\n");
-        System.out.print("Where are you flying from?\n=> "); int continentChoice = scanner.nextInt();
+        System.out.print("Select a continent (1-10): ");
+        int continentChoice = scanner.nextInt();
 
         while (continentChoice < 1 || continentChoice > continentMaxNumber) {
             System.out.print("Invalid choice. Please enter a number between 1 and 10: ");
             continentChoice = scanner.nextInt();
         }
 
-        int countryChoice = showCountriesForContinent(continentChoice);
-        String country = COUNTRY_DATA.get(continentChoice - 1).get(countryChoice - 1);
-        System.out.println("You selected " + country);
-        return country;
+        return continentChoice;
     }
 
     public int showCountriesForContinent(int continentChoice) {
@@ -60,6 +76,8 @@ public class ReservationController {
         switch (continentChoice) {
             case 1:
                 System.out.println("You selected Republic of Korea.");
+                System.out.println("1. Korea");
+                choice = selectCountry(1);
                 break;
             case 2:
                 System.out.println("You selected Northeast Asia. Please choose a country:");
@@ -133,13 +151,48 @@ public class ReservationController {
         System.out.print("Enter the number of your choice (1-" + maxChoice + "): ");
         int countryChoice = scanner.nextInt();
 
-        // 유효성 검사
         while (countryChoice < 1 || countryChoice > maxChoice) {
             System.out.print("Invalid choice. Please enter a number between 1 and " + maxChoice + ": ");
             countryChoice = scanner.nextInt();
         }
 
         return countryChoice;
+    }
+
+    public String[] inputTravelDates() {
+        System.out.println("\n** Select Dates **");
+        scanner.nextLine();
+
+        System.out.print("Enter departure date (YYYY-MM-DD): ");
+        String departureDate = scanner.nextLine();
+
+        System.out.print("Enter return date (YYYY-MM-DD): ");
+        String returnDate = scanner.nextLine();
+
+        return new String[] { departureDate, returnDate };
+    }
+
+    public String selectCabinClass() {
+        System.out.println("\n** Select Cabin Class **");
+        System.out.println("1. Economy");
+        System.out.println("2. Business");
+        System.out.println("3. First");
+        System.out.print("Enter your choice (1-3): ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        while (choice < 1 || choice > 3) {
+            System.out.print("Invalid choice. Please enter a number between 1 and 3: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
+
+        return switch (choice) {
+            case 1 -> "Economy";
+            case 2 -> "Business";
+            case 3 -> "First";
+            default -> "Economy";
+        };
     }
 
     /*

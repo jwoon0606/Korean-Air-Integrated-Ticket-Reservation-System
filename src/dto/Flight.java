@@ -1,20 +1,24 @@
 package dto;
 
+import java.util.List;
+
 public class Flight {
     private String flightNumber;
     private String departure;
     private String destination;
-    private String departureTime;
-    private String arrivalTime;
+    private String departureDate;
+    private List<Seat> seats;
 
-    public Flight(String flightNumber, String departure, String destination, String departureTime, String arrivalTime) {
+    // 생성자
+    public Flight(String flightNumber, String departure, String destination, String departureDate, List<Seat> seats) {
         this.flightNumber = flightNumber;
         this.departure = departure;
         this.destination = destination;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
+        this.departureDate = departureDate;
+        this.seats = seats;
     }
 
+    // getter, setter
     public String getFlightNumber() {
         return flightNumber;
     }
@@ -39,19 +43,24 @@ public class Flight {
         this.destination = destination;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    public String getDepartureDate() {
+        return departureDate;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = departureDate;
     }
 
-    public String getArrivalTime() {
-        return arrivalTime;
+    public List<Seat> getSeats() {
+        return seats;
     }
 
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight " + flightNumber + ": " + departure + " -> " + destination + " on " + departureDate;
     }
 }
