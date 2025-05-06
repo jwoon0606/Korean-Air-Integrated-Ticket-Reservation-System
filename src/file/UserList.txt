@@ -4,3 +4,4 @@
 4,sy,tkdtp123@naver.com,tlsthr123,010-3371-3978,male,1996-01-11
 5,minchan,alscksqkr13@gmail.com,alscks123,01066784110,male,99-11-23
 7,minchan,alscksqkr13@gmial.com,alscks123,010-1234-5678,male,99-11-23
+8,minchan,alscksqkr@gmail.com,alscks123,010-6678-4110,male,1999.11.23
