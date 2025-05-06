@@ -16,12 +16,12 @@ public class TravelAgency implements User {
         this.agencyName = agencyName;
     }
 
-    // agencyName을 class외부에서 접근할 수 있도록 getter를 통해 외부로 제공
+    // Expose agencyName to external classes through getter method
     public String getAgencyName() {
         return agencyName;
     }
 
-    // agencyName을 class외부에서 설정할 수 있도록 setter로 접근할 수 있게 함.
+    // Allow setting agencyName from outside the class through setter method
     public void setAgencyName(String agencyName) {
         this.agencyName = agencyName;
     }

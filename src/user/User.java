@@ -11,5 +11,4 @@ public interface User {
     void setPassword(String password);
     String getPhoneNumber();
     void setPhoneNumber(String phoneNumber);
- 
 }

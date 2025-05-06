@@ -36,7 +36,6 @@ public class Main {
                 System.out.println("6. View User Info");
             }
 
-            
             System.out.println("0. End Program");
             System.out.print("=> ");
 

@@ -1,4 +1,4 @@
-FL123,Republic of Korea,United States,2025-06-01
+FL123,Republic of Korea,United States,2025-06-01, 2025-06-15
 FL124,Republic of Korea,United Kingdom,2025-06-02
 FL125,United States,Republic of Korea,2025-06-10
 FL126,United Kingdom,Republic of Korea,2025-06-15

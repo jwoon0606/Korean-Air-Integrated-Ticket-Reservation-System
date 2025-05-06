@@ -13,13 +13,11 @@ import java.util.Scanner;
 * signUp(RegisteredPassenger/TravelAgency) 
 */
 
-
-
 public class LoginController {
     ArrayList<RegisteredPassenger> userList;
     ArrayList<TravelAgency> agencyList;
-    private RegisteredPassenger currentUser = null; // 일반회원 로그인 구분
-    private TravelAgency currentAgency = null; // 여행사회원 로그인 구분
+    private RegisteredPassenger currentUser = null; // To identify regular user login
+    private TravelAgency currentAgency = null; // To identify travel agency login
     private final Scanner sc = new Scanner(System.in);
     final String fileName = "src/file/UserList.txt";
     final String agencyFileName = "src/file/AgencyList.txt";

@@ -3,6 +3,7 @@ package user;
 import dto.Mileage;
 
 public class RegisteredPassenger implements User{
+    
     private int id;
     private String name;
     private String email;
