@@ -12,7 +12,7 @@ public class ExitCommand implements Command {
     
     @Override
     public void execute() {
-        System.out.println("프로그램을 종료합니다.");
+        System.out.println("Program terminated.");
         runningRef[0] = false; // 참조를 통해 running 값을 변경
     }
     
