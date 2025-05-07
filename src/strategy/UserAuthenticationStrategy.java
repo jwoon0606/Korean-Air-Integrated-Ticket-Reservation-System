@@ -29,12 +29,12 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
     public boolean authenticate(String email, String password) {
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                System.out.println("환영합니다, " + user.getName() + "\n");
+                System.out.println("Welcome, " + user.getName() + "\n");
                 currentUser = user;
                 return true;
             }
         }
-        System.out.println("로그인에 실패했습니다.\n");
+        System.out.println("Login failed.\n");
         return false;
     }
 
