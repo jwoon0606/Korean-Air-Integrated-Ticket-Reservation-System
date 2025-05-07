@@ -40,57 +40,57 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
 
     @Override
     public boolean register() {
-        System.out.println("회원 가입 페이지");
+        System.out.println("Sign up page");
         int newId = ++this.id;
-        System.out.print("이름? "); String name = sc.nextLine();
-        System.out.print("이메일? "); String email = sc.nextLine();
+        System.out.print("name? "); String name = sc.nextLine();
+        System.out.print("email? "); String email = sc.nextLine();
         
         // 이메일 중복 체크
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email)) {
-                System.out.println("이미 등록된 이메일입니다. 다른 이메일을 사용하세요.\n");
+                System.out.println("This email is already registered. Please use another email.\n");
                 return false;
             }
         }
         
-        System.out.print("비밀번호? "); String password = sc.nextLine();
-        System.out.print("전화번호? "); String phoneNumber = sc.nextLine();
-        System.out.print("성별? "); String gender = sc.nextLine();
-        System.out.print("생년월일? "); String birthDate = sc.nextLine();
+        System.out.print("password? "); String password = sc.nextLine();
+        System.out.print("phone number? "); String phoneNumber = sc.nextLine();
+        System.out.print("gender? "); String gender = sc.nextLine();
+        System.out.print("birth date? "); String birthDate = sc.nextLine();
 
         RegisteredPassenger newUser = new RegisteredPassenger(newId, name, email, password, phoneNumber, gender, birthDate);
         userList.add(newUser);
-        System.out.println(newUser.getName() + " 등록 완료");
+        System.out.println(newUser.getName() + " registered successfully");
         saveData();
         return true;
     }
 
     @Override
     public String getStrategyName() {
-        return "일반 회원";
+        return "General user";
     }
     
     @Override
     public void displayUserInfo() {
         if (currentUser != null) {
-            System.out.println("회원 정보:");
-            System.out.println("이름: " + currentUser.getName());
-            System.out.println("이메일: " + currentUser.getEmail());
-            System.out.println("전화번호: " + currentUser.getPhoneNumber());
-            System.out.println("성별: " + currentUser.getGender());
-            System.out.println("생년월일: " + currentUser.getBirthDate() + "\n");
+            System.out.println("User information:");
+            System.out.println("Name: " + currentUser.getName());
+            System.out.println("Email: " + currentUser.getEmail());
+            System.out.println("Phone number: " + currentUser.getPhoneNumber());
+            System.out.println("Gender: " + currentUser.getGender());
+            System.out.println("Birth date: " + currentUser.getBirthDate() + "\n");
         } else {
-            System.out.println("로그인된 사용자가 없습니다.\n");
+            System.out.println("No user is logged in.\n");
         }
     }
     
     @Override
     public void logout() {
         if (currentUser != null) {
-            System.out.println("로그아웃 되었습니다, " + currentUser.getName() + "님.\n");
+            System.out.println("Logged out successfully, " + currentUser.getName() + ".\n");
             currentUser = null;
         } else {
-            System.out.println("로그인된 사용자가 없습니다.\n");
+            System.out.println("No user is logged in.\n");
         }
     }
     
@@ -106,6 +106,11 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         return currentUser;
     }
     
+    @Override
+    public Object getCurrentUserObject() {
+        return currentUser;
+    }
+    
     /**
      * 사용자 데이터 저장
      */
@@ -116,9 +121,9 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
                            user.getPassword() + "," + user.getPhoneNumber() + "," + 
                            user.getGender() + "," + user.getBirthDate());
             }
-            System.out.println("데이터가 성공적으로 저장되었습니다.\n");
+            System.out.println("Data saved successfully.\n");
         } catch (Exception e) {
-            System.out.println("데이터 저장 실패: " + e.getMessage() + "\n");
+            System.out.println("Data saving failed: " + e.getMessage() + "\n");
         }
     }
 
@@ -133,7 +138,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
             if (!file.exists()) {
                 file.getParentFile().mkdirs(); // 폴더가 없으면 생성
                 file.createNewFile();
-                System.out.println("새 사용자 데이터 파일이 생성되었습니다.\n");
+                System.out.println("New user data file created.\n");
                 return;
             }
             
@@ -156,10 +161,10 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
                         }
                     }
                 }
-                System.out.println("사용자 데이터가 성공적으로 로드되었습니다.\n");
+                System.out.println("User data loaded successfully.\n");
             }
         } catch (Exception e) {
-            System.out.println("데이터 로드 실패: " + e.getMessage() + "\n");
+            System.out.println("Data loading failed: " + e.getMessage() + "\n");
         }
     }
 }

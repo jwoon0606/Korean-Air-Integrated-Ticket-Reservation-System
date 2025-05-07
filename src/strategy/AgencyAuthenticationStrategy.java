@@ -29,64 +29,64 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
     public boolean authenticate(String email, String password) {
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email) && agency.getPassword().equals(password)) {
-                System.out.println("환영합니다, 여행사: " + agency.getAgencyName() + "\n");
+                System.out.println("Welcome, " + agency.getAgencyName() + "\n");
                 currentAgency = agency;
                 return true;
             }
         }
-        System.out.println("로그인에 실패했습니다.\n");
+        System.out.println("Login failed.\n");
         return false;
     }
 
     @Override
     public boolean register() {
-        System.out.println("여행사 회원 가입 페이지");
+        System.out.println("Agency sign up page");
         int newId = ++this.agencyId;
-        System.out.print("여행사 이름? "); String agencyName = sc.nextLine();
-        System.out.print("이메일? "); String email = sc.nextLine();
+        System.out.print("Agency name? "); String agencyName = sc.nextLine();
+        System.out.print("Email? "); String email = sc.nextLine();
         
         // 이메일 중복 체크
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email)) {
-                System.out.println("이미 등록된 이메일입니다. 다른 이메일을 사용하세요.\n");
+                System.out.println("This email is already registered. Please use another email.\n");
                 return false;
             }
         }
         
-        System.out.print("비밀번호? "); String password = sc.nextLine();
-        System.out.print("전화번호? "); String phoneNumber = sc.nextLine();
+        System.out.print("Password? "); String password = sc.nextLine();
+        System.out.print("Phone number? "); String phoneNumber = sc.nextLine();
 
         TravelAgency newAgency = new TravelAgency(newId, email, password, phoneNumber, agencyName);
         agencyList.add(newAgency);
-        System.out.println(newAgency.getAgencyName() + " 여행사 등록 완료");
+        System.out.println(newAgency.getAgencyName() + " registered successfully");
         saveAgencyData();
         return true;
     }
     
     @Override
     public String getStrategyName() {
-        return "여행사";
+        return "Travel agency";
     }
     
     @Override
     public void displayUserInfo() {
         if (currentAgency != null) {
-            System.out.println("여행사 정보:");
-            System.out.println("여행사 이름: " + currentAgency.getAgencyName());
-            System.out.println("이메일: " + currentAgency.getEmail());
-            System.out.println("전화번호: " + currentAgency.getPhoneNumber() + "\n");
+            System.out.println("Agency information:");
+            System.out.println("Agency name: " + currentAgency.getAgencyName());
+            System.out.println("Email: " + currentAgency.getEmail());
+            System.out.println("Phone number: " + currentAgency.getPhoneNumber() + "\n");
         } else {
-            System.out.println("로그인된 여행사가 없습니다.\n");
+            System.out.println("No agency is logged in.\n");
         }
     }
     
     @Override
     public void logout() {
         if (currentAgency != null) {
-            System.out.println("로그아웃 되었습니다, " + currentAgency.getAgencyName() + ".\n");
+            System.out.println("Logged out successfully, " + currentAgency.getAgencyName() + ".\n");
             currentAgency = null;
         } else {
-            System.out.println("로그인된 여행사가 없습니다.\n");
+            System.out.println("No agency is logged in.\n");
         }
     }
     
@@ -102,6 +102,11 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         return currentAgency;
     }
     
+    @Override
+    public Object getCurrentUserObject() {
+        return currentAgency;
+    }
+    
     /**
      * 여행사 데이터 저장
      */
@@ -111,9 +116,9 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
                 pw.println(agency.getId() + "," + agency.getAgencyName() + "," + agency.getEmail() + "," + 
                            agency.getPassword() + "," + agency.getPhoneNumber());
             }
-            System.out.println("여행사 데이터가 성공적으로 저장되었습니다.\n");
+            System.out.println("Agency data saved successfully.\n");
         } catch (Exception e) {
-            System.out.println("여행사 데이터 저장 실패: " + e.getMessage() + "\n");
+            System.out.println("Agency data saving failed: " + e.getMessage() + "\n");
         }
     }
 
@@ -128,7 +133,7 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
             if (!file.exists()) {
                 file.getParentFile().mkdirs(); // 폴더가 없으면 생성
                 file.createNewFile();
-                System.out.println("새 여행사 데이터 파일이 생성되었습니다.\n");
+                System.out.println("New agency data file created.\n");
                 return;
             }
             
@@ -150,10 +155,10 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
                         }
                     }
                 }
-                System.out.println("여행사 데이터가 성공적으로 로드되었습니다.\n");
+                System.out.println("Agency data loaded successfully.\n");
             }
         } catch (Exception e) {
-            System.out.println("여행사 데이터 로드 실패: " + e.getMessage() + "\n");
+            System.out.println("Agency data loading failed: " + e.getMessage() + "\n");
         }
     }
 }

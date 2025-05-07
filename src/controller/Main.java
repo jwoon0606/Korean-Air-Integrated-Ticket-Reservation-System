@@ -3,6 +3,9 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import strategy.AgencyAuthenticationStrategy;
+import strategy.AuthenticationStrategy;
+import strategy.UserAuthenticationStrategy;
 import user.GuestPassenger;
 import user.User;
 
@@ -27,7 +30,12 @@ public class Main {
     public void runProgram() {
         boolean[] runningRef = {true}; // 참조를 통해 ExitCommand에서 변경할 수 있도록 배열로 래핑
         
-        LoginController loginController = new LoginController();
+        // 인증 전략 객체 생성
+        AuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
+        AuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
+        
+        // 의존성 주입을 통한 LoginController 생성
+        LoginController loginController = new LoginController(userStrategy, agencyStrategy);
         ReservationController reservationController = new ReservationController();
 
         // 명령 패턴: 각 메뉴 항목을 명령 객체로 캡슐화

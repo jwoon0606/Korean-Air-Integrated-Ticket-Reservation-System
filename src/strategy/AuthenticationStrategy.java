@@ -46,4 +46,11 @@ public interface AuthenticationStrategy {
      * @return 로그인 상태
      */
     boolean isLoggedIn();
+    
+    /**
+     * 현재 로그인된 사용자 객체를 반환합니다.
+     * 
+     * @return 로그인된 사용자 객체 (Object 타입으로 반환, 실제로는 RegisteredPassenger 또는 TravelAgency 등)
+     */
+    Object getCurrentUserObject();
 }

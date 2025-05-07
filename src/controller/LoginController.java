@@ -1,7 +1,5 @@
 package controller;
-import strategy.AgencyAuthenticationStrategy;
 import strategy.AuthenticationStrategy;
-import strategy.UserAuthenticationStrategy;
 import user.RegisteredPassenger;
 import user.TravelAgency;
 import java.util.HashMap;
@@ -23,13 +21,17 @@ public class LoginController {
     
     /**
      * 생성자: 사용 가능한 인증 전략들을 초기화합니다.
+     * 의존성 주입을 통해 전략들을 받습니다.
+     * 
+     * @param userStrategy 일반 사용자 인증 전략
+     * @param agencyStrategy 여행사 인증 전략
      */
-    public LoginController() {
+    public LoginController(AuthenticationStrategy userStrategy, AuthenticationStrategy agencyStrategy) {
         strategies = new HashMap<>();
         
         // 인증 전략 등록
-        strategies.put("user", new UserAuthenticationStrategy());
-        strategies.put("agency", new AgencyAuthenticationStrategy());
+        strategies.put("user", userStrategy);
+        strategies.put("agency", agencyStrategy);
         
         // 기본값으로 일반 사용자 인증 전략 설정
         currentStrategy = strategies.get("user");
@@ -110,8 +112,8 @@ public class LoginController {
      * @return 로그인된 사용자 (없으면 null)
      */
     public RegisteredPassenger getCurrentUser() {
-        if (currentStrategy instanceof UserAuthenticationStrategy) {
-            return ((UserAuthenticationStrategy) currentStrategy).getCurrentUser();
+        if (currentStrategy == strategies.get("user") && currentStrategy.isLoggedIn()) {
+            return (RegisteredPassenger) currentStrategy.getCurrentUserObject();
         }
         return null;
     }
@@ -121,9 +123,17 @@ public class LoginController {
      * @return 로그인된 여행사 (없으면 null)
      */
     public TravelAgency getCurrentAgency() {
-        if (currentStrategy instanceof AgencyAuthenticationStrategy) {
-            return ((AgencyAuthenticationStrategy) currentStrategy).getCurrentAgency();
+        if (currentStrategy == strategies.get("agency") && currentStrategy.isLoggedIn()) {
+            return (TravelAgency) currentStrategy.getCurrentUserObject();
         }
         return null;
+    }
+    
+    /**
+     * 현재 사용 중인 전략의 이름 반환
+     * @return 현재 전략 이름
+     */
+    public String getCurrentStrategyName() {
+        return currentStrategy.getStrategyName();
     }
 }
