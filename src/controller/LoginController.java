@@ -1,5 +1,7 @@
 package controller;
+import strategy.AgencyAuthenticationStrategy;
 import strategy.AuthenticationStrategy;
+import strategy.UserAuthenticationStrategy;
 import user.RegisteredPassenger;
 import user.TravelAgency;
 import java.util.HashMap;
@@ -20,21 +22,31 @@ public class LoginController {
     private AuthenticationStrategy currentStrategy;
     
     /**
-     * 생성자: 사용 가능한 인증 전략들을 초기화합니다.
-     * 의존성 주입을 통해 전략들을 받습니다.
-     * 
-     * @param userStrategy 일반 사용자 인증 전략
-     * @param agencyStrategy 여행사 인증 전략
+     * 기본 생성자: 내부적으로 인증 전략들을 초기화합니다.
+     * Main 클래스가 구체적인 전략 클래스에 의존하지 않도록 합니다.
      */
-    public LoginController(AuthenticationStrategy userStrategy, AuthenticationStrategy agencyStrategy) {
+    public LoginController() {
         strategies = new HashMap<>();
         
-        // 인증 전략 등록
-        strategies.put("user", userStrategy);
-        strategies.put("agency", agencyStrategy);
+        // 인증 전략 등록 - 이 부분은 LoginController 내부에서만 알고 있음
+        strategies.put("user", new UserAuthenticationStrategy());
+        strategies.put("agency", new AgencyAuthenticationStrategy());
         
         // 기본값으로 일반 사용자 인증 전략 설정
         currentStrategy = strategies.get("user");
+    }
+    
+    /**
+     * 의존성 주입을 위한 생성자: 외부에서 전략 맵을 주입받습니다.
+     * 테스트 용이성과 확장성을 위해 유지합니다.
+     * 
+     * @param strategies 인증 전략 맵
+     */
+    public LoginController(Map<String, AuthenticationStrategy> strategies) {
+        this.strategies = strategies;
+        
+        // 기본값으로 일반 사용자 인증 전략 설정 (맵에 "user" 키가 있다고 가정)
+        this.currentStrategy = strategies.get("user");
     }
     
     /**
