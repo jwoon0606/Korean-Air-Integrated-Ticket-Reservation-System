@@ -24,19 +24,19 @@ public class Main {
      * 명령 패턴을 사용하여 메뉴 처리
      */
     public void runProgram() {
-        boolean[] runningRef = {true}; // 참조를 통해 ExitCommand에서 변경할 수 있도록 배열로 래핑
+        boolean[] programRunningState = {true}; // 프로그램 실행 상태를 저장하는 참조 변수
         
         // 컨트롤러 생성
         LoginController loginController = new LoginController();
         ReservationController reservationController = new ReservationController();
 
         // CommandRegistry 초기화
-        CommandRegistry.initialize(loginController, reservationController, runningRef);
+        CommandRegistry.initialize(loginController, reservationController, programRunningState);
 
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
         
         // 프로그램 메인 루프
-        while(runningRef[0]) {
+        while(programRunningState[0]) {
             displayMenu(loginController.isLoggedIn());
             
             System.out.print("=> ");

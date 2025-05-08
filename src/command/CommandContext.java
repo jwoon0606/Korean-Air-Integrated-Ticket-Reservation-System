@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class CommandContext {
     private LoginController loginController;
     private ReservationController reservationController;
-    private boolean[] runningRef;
+    private boolean[] programRunningState;
     private Scanner scanner;
     
     /**
@@ -21,15 +21,15 @@ public class CommandContext {
      * 
      * @param loginController 로그인 컨트롤러
      * @param reservationController 예약 컨트롤러
-     * @param runningRef 프로그램 실행 상태 참조
+     * @param programRunningState 프로그램 실행 상태 참조
      */
     public CommandContext(
             LoginController loginController,
             ReservationController reservationController,
-            boolean[] runningRef) {
+            boolean[] programRunningState) {
         this.loginController = loginController;
         this.reservationController = reservationController;
-        this.runningRef = runningRef;
+        this.programRunningState = programRunningState;
         this.scanner = new Scanner(System.in);
     }
     
@@ -164,6 +164,6 @@ public class CommandContext {
      * 프로그램 종료
      */
     public void exitProgram() {
-        runningRef[0] = false;
+        programRunningState[0] = false;
     }
 } 

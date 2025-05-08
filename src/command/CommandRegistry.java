@@ -17,18 +17,18 @@ public class CommandRegistry {
      * 
      * @param loginController 로그인 컨트롤러
      * @param reservationController 예약 컨트롤러
-     * @param runningRef 프로그램 실행 상태 참조
+     * @param programRunningState 프로그램 실행 상태 참조
      */
     public static void initialize(
             LoginController loginController, 
             ReservationController reservationController,
-            boolean[] runningRef) {
+            boolean[] programRunningState) {
         
         commands = new HashMap<>();
         
         // CommandContext 생성
         CommandContext context = new CommandContext(
-                loginController, reservationController, runningRef);
+                loginController, reservationController, programRunningState);
         
         // 각 메뉴 항목에 대한 명령 객체 생성 및 등록 (CommandContext 사용)
         registerCommand(1, new LoginCommand(context));
