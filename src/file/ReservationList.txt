@@ -34,3 +34,15 @@ Flight: FL126, 2025-06-15, United Kingdom → Republic of Korea
 Class: Economy, Seats Reserved: 1
 Guest Password: 1
 ----
+Reservation ID: 92b032f1-39b2-48a7-8122-ffaba4731c6e
+Passenger Name: minchan park
+Birth Date: 1999-11-23
+Gender: M
+Contact: +82 010-6678-4110, alscksqkr@gmail.com
+Language: korean
+Guest Password: 1
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Business, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Business, Seats Reserved: 1
+----

@@ -19,7 +19,7 @@ public class ViewUserInfoCommand implements Command {
     @Override
     public boolean canExecute(boolean isLoggedIn) {
         if (!isLoggedIn) {
-            System.out.println("먼저 로그인해주세요.");
+            System.out.println("please login first");
             return false;
         }
         return true;

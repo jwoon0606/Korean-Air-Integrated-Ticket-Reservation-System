@@ -86,12 +86,6 @@ public class CommandRegistry {
         }
     }
     
-    /**
-     * 등록된 모든 명령 객체 반환
-     * 
-     * @return 메뉴 ID와 명령 객체의 맵
-     */
-    public static Map<Integer, Command> getAllCommands() {
-        return new HashMap<>(commands); // 방어적 복사본 반환
-    }
+ 
+    
 } 

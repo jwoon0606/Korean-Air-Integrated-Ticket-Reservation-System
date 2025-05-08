@@ -85,27 +85,8 @@ public class CommandContext {
     public boolean isLoggedIn() {
         return loginController.isLoggedIn();
     }
-    
-    /**
-     * 현재 로그인된 일반 사용자 객체 반환
-     * 
-     * @return 로그인된 일반 사용자 객체
-     */
-    public Object getCurrentUser() {
-        return loginController.getCurrentUser();
-    }
-    
-    /**
-     * 현재 로그인된 여행사 객체 반환
-     * 
-     * @return 로그인된 여행사 객체
-     */
-    public Object getCurrentAgency() {
-        return loginController.getCurrentAgency();
-    }
-    
+
     // 예약 관련 기능 위임 메서드
-    
     /**
      * 항공편 예약 수행
      */
