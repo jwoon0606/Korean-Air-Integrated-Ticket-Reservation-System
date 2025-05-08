@@ -1,14 +1,20 @@
 package user;
 
-public interface User {
-    int getId();
-    void setId(int id);
-    String getName();
-    void setName(String name);
-    String getEmail();
-    void setEmail(String email);
-    String getPassword();
-    void setPassword(String password);
-    String getPhoneNumber();
-    void setPhoneNumber(String phoneNumber);
+public abstract class User {
+    protected String name;
+    protected String email;
+    protected String phoneNumber;
+
+    public User() {}
+
+    public User(String name, String email, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPhoneNumber() { return phoneNumber; }
+
 }

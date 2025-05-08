@@ -78,7 +78,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
             System.out.println("Email: " + currentUser.getEmail());
             System.out.println("Phone number: " + currentUser.getPhoneNumber());
             System.out.println("Gender: " + currentUser.getGender());
-            System.out.println("Birth date: " + currentUser.getBirthDate() + "\n");
+            System.out.println("Birth date: " + currentUser.getBirthDay() + "\n");
         } else {
             System.out.println("No user is logged in.\n");
         }
@@ -119,7 +119,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
             for (RegisteredPassenger user : userList) {
                 pw.println(user.getId() + "," + user.getName() + "," + user.getEmail() + "," + 
                            user.getPassword() + "," + user.getPhoneNumber() + "," + 
-                           user.getGender() + "," + user.getBirthDate());
+                           user.getGender() + "," + user.getBirthDay());
             }
             System.out.println("Data saved successfully.\n");
         } catch (Exception e) {
