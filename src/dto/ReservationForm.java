@@ -18,7 +18,7 @@ public class ReservationForm {
     private String countryCode;
     private String mobileNumber;
     private String email;
-    private String Language;
+    private String language;
 
     // '승객 대신 예약 기능'도 추가 하면 좋을 듯
 
@@ -40,7 +40,7 @@ public class ReservationForm {
         this.countryCode = countryCode;
         this.mobileNumber = mobileNumber;
         this.email = email;
-        Language = language;
+        this.language = language;
         this.registerGuestPassword = registerGuestPassword;
         this.reservedFlights = reservedFlights;
     }
@@ -118,11 +118,11 @@ public class ReservationForm {
     }
 
     public String getLanguage() {
-        return Language;
+        return language;
     }
 
     public void setLanguage(String language) {
-        Language = language;
+        this.language = language;
     }
 
     public String getRegisterGuestPassword() {
@@ -148,7 +148,7 @@ public class ReservationForm {
         sb.append("Reservation ID: ").append(id).append("\n")
           .append("Name: ").append(name).append("\n")
           .append("Email: ").append(email).append("\n")
-          .append("Language: ").append(Language).append("\n")
+          .append("Language: ").append(language).append("\n")
           .append("Flights:\n");
         for (ReservedFlight flight : reservedFlights) {
             sb.append(flight.toString()).append("\n");
