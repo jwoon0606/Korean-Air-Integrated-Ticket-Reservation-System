@@ -1,21 +1,19 @@
 package command;
 
-import controller.LoginController;
-
 /**
  * 일반 사용자 로그인을 위한 명령 구현체
  */
 public class LoginCommand implements Command {
-    private LoginController loginController;
+    private CommandContext context;
     
-    public LoginCommand(LoginController loginController) {
-        this.loginController = loginController;
+    public LoginCommand(CommandContext context) {
+        this.context = context;
     }
     
     @Override
     public void execute() {
         System.out.println();
-        loginController.login();
+        context.login();
     }
     
     @Override

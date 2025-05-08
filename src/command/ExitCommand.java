@@ -4,26 +4,25 @@ package command;
  * 프로그램 종료를 위한 명령 구현체
  */
 public class ExitCommand implements Command {
-    private boolean[] runningRef;
+    private CommandContext context;
     
-    public ExitCommand(boolean[] runningRef) {
-        this.runningRef = runningRef;
+    public ExitCommand(CommandContext context) {
+        this.context = context;
     }
     
     @Override
     public void execute() {
-        System.out.println("Program terminated.");
-        runningRef[0] = false; // 참조를 통해 running 값을 변경
+        System.out.println();
+        context.exitProgram();
     }
     
     @Override
     public boolean canExecute(boolean isLoggedIn) {
-        // 항상 실행 가능
-        return true;
+        return true; // 종료는 항상 가능
     }
     
     @Override
     public String getMenuText() {
-        return "0. End Program";
+        return "0. Exit";
     }
 }

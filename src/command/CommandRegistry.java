@@ -26,16 +26,20 @@ public class CommandRegistry {
         
         commands = new HashMap<>();
         
-        // 각 메뉴 항목에 대한 명령 객체 생성 및 등록
-        registerCommand(1, new LoginCommand(loginController));
-        registerCommand(2, new SignUpCommand(loginController));
-        registerCommand(3, new AgencyLoginCommand(loginController));
-        registerCommand(4, new AgencySignUpCommand(loginController));
-        registerCommand(5, new LogoutCommand(loginController));
-        registerCommand(6, new ViewUserInfoCommand(loginController));
-        registerCommand(7, new BookFlightCommand(reservationController));
-        registerCommand(8, new CheckReservationInfoCommand(loginController, reservationController));
-        registerCommand(0, new ExitCommand(runningRef));
+        // CommandContext 생성
+        CommandContext context = new CommandContext(
+                loginController, reservationController, runningRef);
+        
+        // 각 메뉴 항목에 대한 명령 객체 생성 및 등록 (CommandContext 사용)
+        registerCommand(1, new LoginCommand(context));
+        registerCommand(2, new SignUpCommand(context));
+        registerCommand(3, new AgencyLoginCommand(context));
+        registerCommand(4, new AgencySignUpCommand(context));
+        registerCommand(5, new LogoutCommand(context));
+        registerCommand(6, new ViewUserInfoCommand(context));
+        registerCommand(7, new BookFlightCommand(context));
+        registerCommand(8, new CheckReservationInfoCommand(context));
+        registerCommand(0, new ExitCommand(context));
     }
     
     /**

@@ -1,26 +1,25 @@
 package command;
 
-import controller.LoginController;
-
 /**
- * 사용자 정보 보기를 위한 명령 구현체
+ * 사용자 정보 조회를 위한 명령 구현체
  */
 public class ViewUserInfoCommand implements Command {
-    private LoginController loginController;
+    private CommandContext context;
     
-    public ViewUserInfoCommand(LoginController loginController) {
-        this.loginController = loginController;
+    public ViewUserInfoCommand(CommandContext context) {
+        this.context = context;
     }
     
     @Override
     public void execute() {
-        loginController.displayUserInfo();
+        System.out.println();
+        context.displayUserInfo();
     }
     
     @Override
     public boolean canExecute(boolean isLoggedIn) {
         if (!isLoggedIn) {
-            System.out.println("로그인 상태가 아닙니다.");
+            System.out.println("먼저 로그인해주세요.");
             return false;
         }
         return true;

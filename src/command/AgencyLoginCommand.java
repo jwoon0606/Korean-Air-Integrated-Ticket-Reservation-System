@@ -1,21 +1,19 @@
 package command;
 
-import controller.LoginController;
-
 /**
  * 여행사 로그인을 위한 명령 구현체
  */
 public class AgencyLoginCommand implements Command {
-    private LoginController loginController;
+    private CommandContext context;
     
-    public AgencyLoginCommand(LoginController loginController) {
-        this.loginController = loginController;
+    public AgencyLoginCommand(CommandContext context) {
+        this.context = context;
     }
     
     @Override
     public void execute() {
         System.out.println();
-        loginController.travelAgencLogin();
+        context.agencyLogin();
     }
     
     @Override
@@ -29,6 +27,6 @@ public class AgencyLoginCommand implements Command {
     
     @Override
     public String getMenuText() {
-        return "3. Travel Agency Login";
+        return "3. Agency Login";
     }
 }

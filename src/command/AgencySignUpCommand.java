@@ -1,27 +1,25 @@
 package command;
 
-import controller.LoginController;
-
 /**
  * 여행사 회원가입을 위한 명령 구현체
  */
 public class AgencySignUpCommand implements Command {
-    private LoginController loginController;
+    private CommandContext context;
     
-    public AgencySignUpCommand(LoginController loginController) {
-        this.loginController = loginController;
+    public AgencySignUpCommand(CommandContext context) {
+        this.context = context;
     }
     
     @Override
     public void execute() {
         System.out.println();
-        loginController.travelAgencSignUp();
+        context.agencySignUp();
     }
     
     @Override
     public boolean canExecute(boolean isLoggedIn) {
         if (isLoggedIn) {
-            System.out.println("이미 로그인되어 있습니다.");
+            System.out.println("먼저 로그아웃해주세요.");
             return false;
         }
         return true;
@@ -29,6 +27,6 @@ public class AgencySignUpCommand implements Command {
     
     @Override
     public String getMenuText() {
-        return "4. Travel Agency Sign Up";
+        return "4. Agency Sign Up";
     }
 }
