@@ -83,6 +83,7 @@ public class Main {
         commands.put(5, new LogoutCommand(loginController));
         commands.put(6, new ViewUserInfoCommand(loginController));
         commands.put(7, new BookFlightCommand(reservationController));
+        commands.put(8, new CheckReservationInfoCommand(loginController, reservationController));
         commands.put(0, new ExitCommand(runningRef));
         
         return commands;
@@ -105,11 +106,13 @@ public class Main {
             System.out.println(commands.get(3).getMenuText());
             System.out.println(commands.get(4).getMenuText());
             System.out.println(commands.get(7).getMenuText());
+            System.out.println(commands.get(8).getMenuText());
         } else {
             // 로그인한 상태의 메뉴
             System.out.println(commands.get(5).getMenuText());
             System.out.println(commands.get(6).getMenuText());
             System.out.println(commands.get(7).getMenuText());
+            System.out.println(commands.get(8).getMenuText());
         }
         
         // 항상 표시되는 종료 메뉴

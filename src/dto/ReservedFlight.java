@@ -38,4 +38,11 @@ public class ReservedFlight {
     public void setSeatCount(int seatCount) {
         this.seatCount = seatCount;
     }
+    
+ // 예약된 항공편 정보를 예약조회에서 출력하는 toString 메서드
+    @Override
+    public String toString() {
+        return flight.toString() + ", Cabin Class: " + cabinClass + ", Seats Reserved: " + seatCount;
+    }
+    
 }

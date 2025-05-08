@@ -1,6 +1,7 @@
 package controller;
 
 import dto.Flight;
+import dto.ReservationFormFactory;
 import dto.ReservationForm;
 import dto.ReservedFlight;
 import dto.Seat;
@@ -8,11 +9,13 @@ import dto.Seat;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class ReservationController {
     private final Scanner scanner;
     private final FlightController flightController;
+    private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; // 예약 정보 파일 경로
     private static final List<List<String>> COUNTRY_DATA = List.of(
             List.of("Republic of Korea"),
             List.of("China", "Japan", "Mongolia"),
@@ -30,6 +33,52 @@ public class ReservationController {
         scanner = new Scanner(System.in);
         flightController = new FlightController();
     }
+    
+ // 1. 텍스트 파일에서 ReservationForm 목록 생성
+    public List<ReservationForm> loadAllReservations() {
+        List<ReservationForm> reservations = new ArrayList<>();
+        List<String> currentBlock = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(RESERVATION_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("----")) {
+                    reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
+                    currentBlock.clear();
+                } else {
+                    currentBlock.add(line);
+                }
+            }
+            if (!currentBlock.isEmpty()) {
+                reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
+            }
+        } catch (IOException e) {
+            System.out.println("[오류] 예약 파일 읽기 실패: " + e.getMessage());
+        }
+        return reservations;
+    }
+
+    // 2. Registered 사용자: 이메일 기반 필터
+    public List<ReservationForm> findReservationsByEmail(String email) {
+        List<ReservationForm> matched = new ArrayList<>();
+        for (ReservationForm r : loadAllReservations()) {
+            if (r.getEmail().equalsIgnoreCase(email)) {
+                matched.add(r);
+            }
+        }
+        return matched;
+    }
+
+    // 3. Guest 사용자: ID + 비밀번호 기반 필터
+    public ReservationForm findByReservationIdAndPassword(String id, String password) {
+        for (ReservationForm r : loadAllReservations()) {
+            if (r.getId().equals(id) && r.getRegisterGuestPassword().equals(password)) {
+                return r;
+            }
+        }
+        return null;
+    }
+    
 
     public void bookFlight() {
         ArrayList<ReservedFlight> flights = selectFlight();
@@ -346,13 +395,14 @@ public class ReservationController {
 
 
     private void saveReservationToFile(ReservationForm form) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/file/ReservationList.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RESERVATION_FILE, true))) {
             writer.write("Reservation ID: " + form.getId() + "\n");
             writer.write("Passenger Name: " + form.getName() + "\n");
             writer.write("Birth Date: " + form.getBirthDate() + "\n");
             writer.write("Gender: " + form.getGender() + "\n");
             writer.write("Contact: +" + form.getCountryCode() + " " + form.getMobileNumber() + ", " + form.getEmail() + "\n");
             writer.write("Language: " + form.getLanguage() + "\n");
+            writer.write("Guest Password: " + form.getRegisterGuestPassword() + "\n");
 
             for (ReservedFlight rf : form.getReservedFlights()) {
                 Flight flight = rf.getFlight();

@@ -23,9 +23,13 @@ public class ReservationForm {
     // '승객 대신 예약 기능'도 추가 하면 좋을 듯
 
     private String registerGuestPassword;
-
     private ArrayList<ReservedFlight> reservedFlights;
 
+    /*클래스의 기본 생성자(no-argument constructor): 빈 ReservationForm 객체를 먼저 생성한 다음,
+    라인을 하나씩 파싱하면서 setXxx() 메서드를 호출해 필드 값을 설정하기 때문 */
+    public ReservationForm() {}  
+    
+    
     public ReservationForm(String id, String name, String gender, String birthDate, String carrierForMileageAccumulation, String membershipNumber, String countryCode, String mobileNumber, String email, String language, String registerGuestPassword, ArrayList<ReservedFlight> reservedFlights) {
         this.id = id;
         this.name = name;
@@ -135,5 +139,20 @@ public class ReservationForm {
 
     public void setReservedFlightsFlights(ArrayList<ReservedFlight> reservedFlights) {
         this.reservedFlights = reservedFlights;
+    }
+    
+    // ReservationForm에서 예약 정보를 출력할 때 ReservedFlight 객체를 자동으로 출력
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Reservation ID: ").append(id).append("\n")
+          .append("Name: ").append(name).append("\n")
+          .append("Email: ").append(email).append("\n")
+          .append("Language: ").append(Language).append("\n")
+          .append("Flights:\n");
+        for (ReservedFlight flight : reservedFlights) {
+            sb.append(flight.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }
