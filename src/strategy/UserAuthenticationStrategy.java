@@ -16,6 +16,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
     private final Scanner sc = new Scanner(System.in);
     private final String fileName = "src/file/UserList.txt";
     private int id = 0;
+    private RegisteredPassenger lastRegisteredUser = null; // 새로 추가된 필드
 
     /**
      * 생성자: 사용자 데이터 로드
@@ -41,6 +42,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
     @Override
     public boolean register() {
         System.out.println("Sign up page");
+        this.lastRegisteredUser = null; // 메서드 시작 시 초기화
         int newId = ++this.id;
         System.out.print("name? "); String name = sc.nextLine();
         System.out.print("email? "); String email = sc.nextLine();
@@ -48,8 +50,8 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         // 이메일 중복 체크
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email)) {
-                System.out.println("This email is already registered. Please use another email.\n");
-                return false;
+                System.out.println("This email is already registered. Please use another email.\\\\n");
+                return false; // 실패 시 false 반환
             }
         }
         
@@ -62,7 +64,16 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         userList.add(newUser);
         System.out.println(newUser.getName() + " registered successfully");
         saveData();
-        return true;
+        this.lastRegisteredUser = newUser; // 성공 시 객체 저장
+        return true; // 성공 시 true 반환
+    }
+
+    /**
+     * 마지막으로 가입 성공한 사용자 정보를 반환합니다.
+     * @return 마지막 가입 사용자 객체, 없거나 실패 시 null
+     */
+    public RegisteredPassenger getLastRegisteredUser() {
+        return this.lastRegisteredUser;
     }
 
     @Override
@@ -166,5 +177,18 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         } catch (Exception e) {
             System.out.println("Data loading failed: " + e.getMessage() + "\n");
         }
+    }
+
+    public boolean deleteUser(String email) {
+        for (RegisteredPassenger user : userList) {
+            if (user.getEmail().equals(email)) {
+                userList.remove(user);
+                System.out.println("User " + email + " deleted successfully.\n");
+                saveData();
+                return true;
+            }
+        }
+        System.out.println("User " + email + " not found.\n");
+        return false;
     }
 }

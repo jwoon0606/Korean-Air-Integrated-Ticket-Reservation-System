@@ -20,7 +20,8 @@ public class LoginController {
     
     // 현재 선택된 인증 전략
     private AuthenticationStrategy currentStrategy;
-    
+    private RegisteredPassenger lastSignedUpUser; // 마지막으로 가입한 사용자 정보 임시 저장
+
     /**
      * 기본 생성자: 내부적으로 인증 전략들을 초기화합니다.
      * Main 클래스가 구체적인 전략 클래스에 의존하지 않도록 합니다.
@@ -70,7 +71,44 @@ public class LoginController {
     public void signUp() {
         // 일반 사용자 인증 전략으로 변경
         currentStrategy = strategies.get("user");
-        currentStrategy.register();
+        boolean success = currentStrategy.register(); // register의 반환값(boolean)을 받음
+
+        // UserAuthenticationStrategy 내부에서 마지막 가입자 정보를 관리하도록 변경
+        // LoginController는 UserAuthenticationStrategy의 getter를 통해 마지막 가입자 정보를 가져옴
+        if (success && currentStrategy instanceof UserAuthenticationStrategy) {
+            this.lastSignedUpUser = ((UserAuthenticationStrategy) currentStrategy).getLastRegisteredUser();
+        } else {
+            this.lastSignedUpUser = null; // 가입 실패 또는 다른 타입 반환 시 null 처리
+        }
+    }
+
+    /**
+     * 마지막으로 가입한 사용자 삭제 (Undo용)
+     */
+    public boolean deleteLastSignedUpUser() {
+        if (this.lastSignedUpUser != null && currentStrategy instanceof UserAuthenticationStrategy) {
+            // UserAuthenticationStrategy에 실제 사용자 삭제 로직이 구현되어 있어야 함
+            // UserAuthenticationStrategy.deleteUser(String email)을 호출한다고 가정합니다.
+            boolean deleted = ((UserAuthenticationStrategy) currentStrategy).deleteUser(this.lastSignedUpUser.getEmail());
+            if (deleted) {
+                System.out.println("Account for " + this.lastSignedUpUser.getEmail() + " has been deleted.");
+                this.lastSignedUpUser = null; // 삭제 후 초기화
+                return true;
+            } else {
+                System.out.println("Failed to delete account for " + this.lastSignedUpUser.getEmail() + ". It might have been already deleted or an error occurred during deletion.");
+                return false;
+            }
+        }
+        System.out.println("No recently signed up user to delete, user was not a regular user, or an issue occurred.");
+        return false;
+    }
+
+    /**
+     * 마지막으로 가입한 사용자 정보를 반환합니다.
+     * @return 마지막으로 가입한 RegisteredPassenger 객체, 없으면 null
+     */
+    public RegisteredPassenger getLastSignedUpUser() {
+        return this.lastSignedUpUser;
     }
 
     /**
