@@ -1,104 +1,32 @@
-package command;
+package command.concrete_command;
 
 import controller.LoginController;
 import controller.ReservationController;
 import dto.ReservationForm;
 import java.util.List;
 import java.util.Scanner;
+import command.undo_command.UndoableCommand;
 
 /**
- * Command 실행에 필요한 컨텍스트를 제공하는 클래스
- * Command와 Controller 간의 직접적인 결합을 방지
+ * 예약 정보 확인을 위한 명령 구현체
  */
-public class CommandContext {
+public class CheckReservationInfoCommand implements UndoableCommand{
     private LoginController loginController;
     private ReservationController reservationController;
-    private boolean[] programRunningState;
     private Scanner scanner;
-    
-    /**
-     * 생성자
-     * 
-     * @param loginController 로그인 컨트롤러
-     * @param reservationController 예약 컨트롤러
-     * @param programRunningState 프로그램 실행 상태 참조
-     */
-    public CommandContext(
-            LoginController loginController,
-            ReservationController reservationController,
-            boolean[] programRunningState) {
+
+    public CheckReservationInfoCommand(LoginController loginController, ReservationController reservationController) {
         this.loginController = loginController;
         this.reservationController = reservationController;
-        this.programRunningState = programRunningState;
         this.scanner = new Scanner(System.in);
     }
-    
-    // 로그인 관련 기능 위임 메서드
-    
-    /**
-     * 일반 사용자 로그인 수행
-     */
-    public void login() {
-        loginController.login();
-    }
-    
-    /**
-     * 일반 사용자 회원가입 수행
-     */
-    public void signUp() {
-        loginController.signUp();
-    }
-    
-    /**
-     * 여행사 로그인 수행
-     */
-    public void agencyLogin() {
-        loginController.travelAgencLogin();
-    }
-    
-    /**
-     * 여행사 회원가입 수행
-     */
-    public void agencySignUp() {
-        loginController.travelAgencSignUp();
-    }
-    
-    /**
-     * 로그아웃 수행
-     */
-    public void logout() {
-        loginController.logout();
-    }
-    
-    /**
-     * 사용자 정보 표시
-     */
-    public void displayUserInfo() {
-        loginController.displayUserInfo();
-    }
-    
-    /**
-     * 로그인 상태 확인
-     * 
-     * @return 로그인 상태
-     */
-    public boolean isLoggedIn() {
-        return loginController.isLoggedIn();
-    }
 
-    // 예약 관련 기능 위임 메서드
-    /**
-     * 항공편 예약 수행
-     */
-    public void bookFlight() {
-        reservationController.bookFlight();
-    }
-    
-    /**
-     * 예약 정보 확인
-     */
-    public void checkReservationInfo() {
+    @Override
+    public void execute() {
+        System.out.println();
+        
         if (!loginController.isLoggedIn()) {
+            // 게스트 사용자의 예약 조회
             System.out.print("예약 ID를 입력하세요: ");
             String id = scanner.nextLine();
             System.out.print("비밀번호를 입력하세요: ");
@@ -112,7 +40,7 @@ public class CommandContext {
                 System.out.println("예약 정보를 찾을 수 없습니다.");
             }
         } else {
-            // 로그인된 사용자의 이메일로 예약 조회
+            // 로그인된 사용자의 예약 조회
             String email = loginController.getCurrentUser().getEmail();
             List<ReservationForm> reservations = reservationController.findReservationsByEmail(email);
 
@@ -138,13 +66,20 @@ public class CommandContext {
             }
         }
     }
-    
-    // 프로그램 제어 메서드
-    
-    /**
-     * 프로그램 종료
-     */
-    public void exitProgram() {
-        programRunningState[0] = false;
+
+    @Override
+    public String getMenuText() {
+        return "8. Check Reservation Info";
     }
-} 
+
+    @Override
+    public boolean canExecute(boolean isLoggedIn) {
+        return true;
+    }
+
+    @Override
+    public void undo() {
+        // Undo 기능은 필요하지 않음
+        System.out.println("does not support undo.");
+    }
+}

@@ -1,4 +1,4 @@
-package command;
+package command.command;
 
 /**
  * 명령 패턴의 기본 인터페이스
