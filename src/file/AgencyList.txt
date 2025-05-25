@@ -3,3 +3,4 @@
 3,agency2,alscksqkr@gmail.com,alscks123,010-6678-4110
 4,korean agency,korean@gmail.com,korean123,055-111-1111
 5,mmm,aaa@gmail.com,aaa,010-333-3333
+6,korea air,korea@gmail.com,korea123,055-234-3333

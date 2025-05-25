@@ -1,21 +1,38 @@
 package command.concrete_command;
+
 import command.undo_command.UndoableCommand;
 import controller.LoginController;
+
+import java.util.Scanner;
 
 /**
  * 여행사 회원가입을 위한 명령 구현체
  */
 public class AgencySignUpCommand implements UndoableCommand {
     private LoginController loginController;
+    private Scanner scanner; // 사용자 입력용 Scanner
 
     public AgencySignUpCommand(LoginController loginController) {
         this.loginController = loginController;
+        this.scanner = new Scanner(System.in); // Scanner 초기화
     }
 
     @Override
-    public void execute() {
-        System.out.println();
-        loginController.travelAgencSignUp();
+    public void execute() { // 반환 타입 void로 변경
+        System.out.println(); // UI 간격용 빈 줄
+        loginController.travelAgencSignUp(); // 회원가입 시도
+
+        if (loginController.getLastSignedUpAgency() != null) {
+            System.out.print("Undo sign up? (yes/no): ");
+            String response = scanner.nextLine().trim().toLowerCase();
+            if ("yes".equals(response)) {
+                undo(); // 사용자가 'yes'를 입력하면 undo 실행
+            } else {
+                System.out.println("Agency sign up process completed. Returning to menu.");
+            }
+        } else {
+            System.out.println("Returning to menu.");
+        }
     }
 
     @Override
@@ -34,8 +51,13 @@ public class AgencySignUpCommand implements UndoableCommand {
 
     @Override
     public void undo() {
-        // 여기에 undo 로직을 구현합니다.
-        // 예를 들어, 로그인 상태를 초기화하는 등의 작업을 수행할 수 있습니다.
-        
+        // LoginController를 통해 마지막 가입 여행사 삭제
+        System.out.println("Attempting to undo agency sign up...");
+        boolean undone = loginController.deleteLastSignedUpAgency();
+        if (undone) {
+            System.out.println("Agency sign up has been successfully undone.");
+        } else {
+            System.out.println("Failed to undo agency sign up. The agency might not have been created, already deleted, or an error occurred.");
+        }
     }
 }

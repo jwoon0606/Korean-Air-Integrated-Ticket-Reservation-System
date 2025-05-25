@@ -20,7 +20,8 @@ public class LoginController {
     
     // 현재 선택된 인증 전략
     private AuthenticationStrategy currentStrategy;
-    private RegisteredPassenger lastSignedUpUser; // 마지막으로 가입한 사용자 정보 임시 저장
+    private RegisteredPassenger lastSignedUpUser; // 마지막으로 가입한 일반 사용자 정보 임시 저장
+    private TravelAgency lastSignedUpAgency; // 마지막으로 가입한 여행사 정보 임시 저장
 
     /**
      * 기본 생성자: 내부적으로 인증 전략들을 초기화합니다.
@@ -132,7 +133,40 @@ public class LoginController {
     public void travelAgencSignUp() {
         // 여행사 인증 전략으로 변경
         currentStrategy = strategies.get("agency");
-        currentStrategy.register();
+        boolean success = currentStrategy.register();
+
+        if (success && currentStrategy instanceof AgencyAuthenticationStrategy) {
+            this.lastSignedUpAgency = ((AgencyAuthenticationStrategy) currentStrategy).getLastRegisteredAgency();
+        } else {
+            this.lastSignedUpAgency = null;
+        }
+    }
+
+    /**
+     * 마지막으로 가입한 여행사 사용자 삭제 (Undo용)
+     */
+    public boolean deleteLastSignedUpAgency() {
+        if (this.lastSignedUpAgency != null && currentStrategy instanceof AgencyAuthenticationStrategy) {
+            boolean deleted = ((AgencyAuthenticationStrategy) currentStrategy).deleteAgency(this.lastSignedUpAgency.getEmail());
+            if (deleted) {
+                System.out.println("Agency account for " + this.lastSignedUpAgency.getEmail() + " has been deleted.");
+                this.lastSignedUpAgency = null; // 삭제 후 초기화
+                return true;
+            } else {
+                System.out.println("Failed to delete agency account for " + this.lastSignedUpAgency.getEmail() + ". It might have been already deleted or an error occurred during deletion.");
+                return false;
+            }
+        }
+        System.out.println("No recently signed up agency to delete, or an issue occurred.");
+        return false;
+    }
+
+    /**
+     * 마지막으로 가입한 여행사 정보를 반환합니다.
+     * @return 마지막으로 가입한 TravelAgency 객체, 없으면 null
+     */
+    public TravelAgency getLastSignedUpAgency() {
+        return this.lastSignedUpAgency;
     }
     
     /**
