@@ -79,7 +79,7 @@ public class CheckReservationInfoCommand implements UndoableCommand{
 
     @Override
     public void undo() {
-        // Undo 기능은 필요하지 않음
-        System.out.println("does not support undo.");
+        // undo를 할 필요는 없고 stack에서 pop을 하고 뒤로 돌아가기만 한다.
+        System.out.println("Returning to the main menu.");
     }
 }

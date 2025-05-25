@@ -98,7 +98,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
     @Override
     public void logout() {
         if (currentUser != null) {
-            System.out.println("Logged out successfully, " + currentUser.getName() + ".\n");
+            System.out.print("\nLogged out successfully, " + currentUser.getName() + ".");
             currentUser = null;
         } else {
             System.out.println("No user is logged in.\n");

@@ -141,6 +141,48 @@ public class ReservationForm {
         this.reservedFlights = reservedFlights;
     }
     
+    /**
+     * ReservationForm 객체의 정보를 파일에 저장할 형식의 문자열 리스트로 변환합니다.
+     * 이 메소드는 ReservationController의 overwriteAllReservations에서 사용되며,
+     * ReservationFormFactory.fromTextBlock이 파싱하는 형식과 동일해야 합니다.
+     * @return 파일 저장 형식의 문자열 리스트
+     */
+    public ArrayList<String> toTextBlock() {
+        ArrayList<String> block = new ArrayList<>();
+
+        // 각 필드의 값이 null이 아닌 경우에만 문자열로 변환하여 리스트에 추가합니다.
+        // ReservationFormFactory의 fromTextBlock 메소드에서 사용하는 키 값과 형식을 일치시킵니다.
+
+        if (id != null) block.add("Reservation ID: " + id);
+        if (name != null) block.add("Passenger Name: " + name);
+        if (birthDate != null) block.add("Birth Date: " + birthDate);
+        if (gender != null) block.add("Gender: " + gender);
+        // Contact 정보는 countryCode, mobileNumber, email이 모두 존재할 때 하나의 라인으로 만듭니다.
+        if (countryCode != null && mobileNumber != null && email != null) {
+            block.add("Contact: +" + countryCode + " " + mobileNumber + ", " + email);
+        }
+        if (language != null) block.add("Language: " + language);
+        if (registerGuestPassword != null) block.add("Guest Password: " + registerGuestPassword);
+
+        // ReservedFlights 정보 처리
+        if (reservedFlights != null) {
+            for (ReservedFlight rf : reservedFlights) {
+                Flight flight = rf.getFlight();
+                if (flight != null) {
+                    // Flight 정보: FlightNumber, DepartureDate, Departure → Destination 형식
+                    block.add("Flight: " + flight.getFlightNumber() + ", " + 
+                              flight.getDepartureDate() + ", " + 
+                              flight.getDeparture() + " → " + flight.getDestination());
+                }
+                // Class 정보: CabinClass, Seats Reserved 형식
+                if (rf.getCabinClass() != null) { // seatCount는 int형이므로 null 체크 불필요
+                    block.add("Class: " + rf.getCabinClass() + ", Seats Reserved: " + rf.getSeatCount());
+                }
+            }
+        }
+        return block;
+    }
+
     // ReservationForm에서 예약 정보를 출력할 때 ReservedFlight 객체를 자동으로 출력
     @Override
     public String toString() {

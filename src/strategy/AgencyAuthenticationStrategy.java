@@ -117,7 +117,7 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
     @Override
     public void logout() {
         if (currentAgency != null) {
-            System.out.println("Logged out successfully, " + currentAgency.getAgencyName() + ".\n");
+            System.out.print("\nLogged out successfully, " + currentAgency.getAgencyName() + ".");
             currentAgency = null;
         } else {
             System.out.println("No agency is logged in.\n");
@@ -150,7 +150,7 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
                 pw.println(agency.getId() + "," + agency.getAgencyName() + "," + agency.getEmail() + "," + 
                            agency.getPassword() + "," + agency.getPhoneNumber());
             }
-            System.out.println("Agency data saved successfully.\n");
+            System.out.println("Agency data saved successfully.");
         } catch (Exception e) {
             System.out.println("Agency data saving failed: " + e.getMessage() + "\n");
         }

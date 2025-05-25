@@ -34,7 +34,7 @@ public class ViewUserInfoCommand implements UndoableCommand {
 
     @Override
     public void undo() {
-        // 여기에 undo 로직을 구현합니다.
-        // 예를 들어, 로그인 상태를 초기화하는 등의 작업을 수행할 수 있습니다.
+
+        System.out.println("Returning to the main menu.");
     }
 }

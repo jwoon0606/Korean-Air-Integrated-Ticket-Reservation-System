@@ -1,8 +1,6 @@
 package controller;
 
 import java.util.Scanner;
-import user.GuestPassenger;
-import user.User;
 import command.concrete_command.AgencyLoginCommand;
 import command.concrete_command.AgencySignUpCommand;
 import command.concrete_command.BookFlightCommand;
@@ -20,7 +18,6 @@ import command.invoker.CommandRegistry;
  */
 public class Main {
     Scanner sc = new Scanner(System.in);
-    User user = new GuestPassenger();
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -57,15 +54,26 @@ public class Main {
         // 프로그램 메인 루프
         while(programRunningState[0]) {
             invoker.displayMenu(loginController.isLoggedIn());
+            System.out.println("-1. Undo last operation"); // Option to undo the previous action
             
             System.out.print("=> ");
-            int menuChoice = sc.nextInt();
-            sc.nextLine(); // 버퍼 비우기
+            int menuChoice = -1; // 기본값을 -1과 같이 유효하지 않은 메뉴 번호로 설정
+            if (sc.hasNextInt()) {
+                menuChoice = sc.nextInt();
+            }
+            sc.nextLine(); // 버퍼 비우기 (정수 입력 후 남은 줄바꿈 문자 제거)
             
-            // Invoker에게 명령 실행 위임 (로그인 상태 전달)
-            invoker.executeCommand(menuChoice, loginController.isLoggedIn());
+            if (menuChoice == -1) { // 사용자가 99를 입력하면 실행 취소
+                invoker.undoCommand();
+            } else if (menuChoice != -1) { // 유효한 정수 입력인 경우
+                // Invoker에게 명령 실행 위임 (로그인 상태 전달)
+                invoker.executeCommand(menuChoice, loginController.isLoggedIn());
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+            }
         }
 
         System.out.println("Program terminated.");
+        sc.close(); // Scanner 리소스 정리
     }
 }

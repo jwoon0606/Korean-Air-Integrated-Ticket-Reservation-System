@@ -98,6 +98,49 @@ public class ReservationController {
         System.out.println("\nReservation completed and saved successfully!");
     }
 
+    /**
+     * 가장 최근의 예약을 취소합니다.
+     * 예약 목록에서 마지막 예약을 제거하고 변경된 내용을 파일에 덮어씁니다.
+     * @return 예약 취소에 성공하면 true, 그렇지 않으면 false를 반환합니다.
+     */
+    public boolean cancelMostRecentBooking() {
+        List<ReservationForm> reservations = loadAllReservations();
+
+        if (reservations.isEmpty()) {
+            // 메시지는 BookFlightCommand에서 처리합니다.
+            return false;
+        }
+
+        // 가장 최근 예약 (리스트의 마지막 요소) 제거
+        reservations.remove(reservations.size() - 1);
+
+        // 변경된 예약 목록을 파일에 다시 쓴다 (덮어쓰기)
+        return overwriteAllReservations(reservations);
+    }
+
+    /**
+     * 제공된 모든 예약 정보를 파일에 덮어씁니다.
+     * @param reservations 파일에 저장할 ReservationForm 객체의 리스트
+     * @return 파일 쓰기에 성공하면 true, 그렇지 않으면 false를 반환합니다.
+     */
+    private boolean overwriteAllReservations(List<ReservationForm> reservations) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RESERVATION_FILE, false))) { // false는 덮어쓰기 모드를 의미
+            for (ReservationForm form : reservations) {
+                List<String> textBlock = form.toTextBlock(); // ReservationForm에 이 메소드가 구현되어 있어야 함
+                for (String line : textBlock) {
+                    writer.write(line);
+                    writer.newLine();
+                }
+                writer.write("----"); // 각 예약 정보 블록 다음에 구분자 추가
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("[오류] 예약 파일 전체 쓰기 실패: " + e.getMessage());
+            return false;
+        }
+    }
+
     public ArrayList<ReservedFlight> selectFlight() {
         System.out.println("\n* Select Flight *");
         System.out.println("** Select Country **");

@@ -1,13 +1,10 @@
 package command.undo_command;
 
-// ExecuteResult 임포트 제거
+import command.command.Command;
 
-/**
- * Undo 기능을 지원하는 명령 인터페이스
- */
-public interface UndoableCommand {
-    void execute(); // 반환 타입을 void로 변경
-    void undo();
-    boolean canExecute(boolean isLoggedIn);
-    String getMenuText();
+// undo 기능을 지원하는 명령 인터페이스
+// Command 인터페이스를 확장하여 undo 메서드를 추가합니다.
+public interface UndoableCommand extends Command{
+
+    public void undo();
 }

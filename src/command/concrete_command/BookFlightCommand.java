@@ -30,8 +30,13 @@ public class BookFlightCommand implements UndoableCommand {
 
     @Override
     public void undo() {
-        // 여기에 undo 로직을 구현합니다.
-        // 예를 들어, 예약을 취소하는 등의 작업을 수행할 수 있습니다.
-
+        // 항공편 예약 취소 로직을 ReservationController에 위임합니다.
+        // ReservationController에 cancelMostRecentBooking()과 같은 메소드가 있다고 가정합니다.
+        // 이 메소드는 가장 최근에 생성된 예약을 찾아 삭제하거나 '취소됨' 상태로 변경합니다.
+        if (reservationController.cancelMostRecentBooking()) {
+            System.out.println("\nreservation has been canceled.");
+        } else {
+            System.out.println("No flight booking to cancel or cancellation failed.");
+        }
     }
 }
