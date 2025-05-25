@@ -70,9 +70,11 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
 
     /**
      * 마지막으로 가입 성공한 사용자 정보를 반환합니다.
+     * 인터페이스 메서드 구현
      * @return 마지막 가입 사용자 객체, 없거나 실패 시 null
      */
-    public RegisteredPassenger getLastRegisteredUser() {
+    @Override
+    public Object getLastRegisteredUser() {
         return this.lastRegisteredUser;
     }
 
@@ -179,6 +181,7 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         }
     }
 
+    @Override
     public boolean deleteUser(String email) {
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email)) {

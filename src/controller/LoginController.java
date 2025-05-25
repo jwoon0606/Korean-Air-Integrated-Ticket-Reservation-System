@@ -4,8 +4,6 @@ import strategy.AuthenticationStrategy;
 import strategy.UserAuthenticationStrategy;
 import user.RegisteredPassenger;
 import user.TravelAgency;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /** 
@@ -15,8 +13,9 @@ import java.util.Scanner;
 public class LoginController {
     private final Scanner sc = new Scanner(System.in);
     
-    // 전략 패턴: 인증 전략들을 저장하는 맵
-    private Map<String, AuthenticationStrategy> strategies;
+    // 전략 패턴: 개별 인증 전략 인스턴스
+    private AuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
+    private AuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
     
     // 현재 선택된 인증 전략
     private AuthenticationStrategy currentStrategy;
@@ -25,30 +24,25 @@ public class LoginController {
 
     /**
      * 기본 생성자: 내부적으로 인증 전략들을 초기화합니다.
-     * Main 클래스가 구체적인 전략 클래스에 의존하지 않도록 합니다.
      */
     public LoginController() {
-        strategies = new HashMap<>();
-        
-        // 인증 전략 등록 - 이 부분은 LoginController 내부에서만 알고 있음
-        strategies.put("user", new UserAuthenticationStrategy());
-        strategies.put("agency", new AgencyAuthenticationStrategy());
-        
         // 기본값으로 일반 사용자 인증 전략 설정
-        currentStrategy = strategies.get("user");
+        currentStrategy = this.userStrategy;
     }
     
     /**
-     * 의존성 주입을 위한 생성자: 외부에서 전략 맵을 주입받습니다.
+     * 의존성 주입을 위한 생성자: 외부에서 개별 전략 객체를 주입받습니다.
      * 테스트 용이성과 확장성을 위해 유지합니다.
      * 
-     * @param strategies 인증 전략 맵
+     * @param userStrategy 일반 사용자 인증 전략
+     * @param agencyStrategy 여행사 인증 전략
      */
-    public LoginController(Map<String, AuthenticationStrategy> strategies) {
-        this.strategies = strategies;
+    public LoginController(AuthenticationStrategy userStrategy, AuthenticationStrategy agencyStrategy) {
+        this.userStrategy = userStrategy;
+        this.agencyStrategy = agencyStrategy;
         
-        // 기본값으로 일반 사용자 인증 전략 설정 (맵에 "user" 키가 있다고 가정)
-        this.currentStrategy = strategies.get("user");
+        // 기본값으로 주입된 일반 사용자 인증 전략 설정 
+        this.currentStrategy = this.userStrategy;
     }
     
     /**
@@ -56,7 +50,7 @@ public class LoginController {
      */
     public void login() {
         // 일반 사용자 인증 전략으로 변경
-        currentStrategy = strategies.get("user");
+        currentStrategy = this.userStrategy;
         
         System.out.print("email? ");
         String email = sc.nextLine();
@@ -71,15 +65,19 @@ public class LoginController {
      */
     public void signUp() {
         // 일반 사용자 인증 전략으로 변경
-        currentStrategy = strategies.get("user");
+        currentStrategy = this.userStrategy;
         boolean success = currentStrategy.register(); // register의 반환값(boolean)을 받음
 
-        // UserAuthenticationStrategy 내부에서 마지막 가입자 정보를 관리하도록 변경
-        // LoginController는 UserAuthenticationStrategy의 getter를 통해 마지막 가입자 정보를 가져옴
-        if (success && currentStrategy instanceof UserAuthenticationStrategy) {
-            this.lastSignedUpUser = ((UserAuthenticationStrategy) currentStrategy).getLastRegisteredUser();
+        // 인터페이스를 통해 마지막 가입자 정보를 가져옴
+        if (success) {
+            Object registeredUser = currentStrategy.getLastRegisteredUser();
+            if (registeredUser instanceof RegisteredPassenger) {
+                this.lastSignedUpUser = (RegisteredPassenger) registeredUser;
+            } else {
+                this.lastSignedUpUser = null;
+            }
         } else {
-            this.lastSignedUpUser = null; // 가입 실패 또는 다른 타입 반환 시 null 처리
+            this.lastSignedUpUser = null; // 가입 실패 시 null 처리
         }
     }
 
@@ -87,10 +85,9 @@ public class LoginController {
      * 마지막으로 가입한 사용자 삭제 (Undo용)
      */
     public boolean deleteLastSignedUpUser() {
-        if (this.lastSignedUpUser != null && currentStrategy instanceof UserAuthenticationStrategy) {
-            // UserAuthenticationStrategy에 실제 사용자 삭제 로직이 구현되어 있어야 함
-            // UserAuthenticationStrategy.deleteUser(String email)을 호출한다고 가정합니다.
-            boolean deleted = ((UserAuthenticationStrategy) currentStrategy).deleteUser(this.lastSignedUpUser.getEmail());
+        if (this.lastSignedUpUser != null) {
+            // 인터페이스를 통해 사용자 삭제
+            boolean deleted = currentStrategy.deleteUser(this.lastSignedUpUser.getEmail());
             if (deleted) {
                 System.out.println("Account for " + this.lastSignedUpUser.getEmail() + " has been deleted.");
                 this.lastSignedUpUser = null; // 삭제 후 초기화
@@ -100,7 +97,7 @@ public class LoginController {
                 return false;
             }
         }
-        System.out.println("No recently signed up user to delete, user was not a regular user, or an issue occurred.");
+        System.out.println("No recently signed up user to delete.");
         return false;
     }
 
@@ -117,7 +114,7 @@ public class LoginController {
      */
     public void travelAgencLogin() {
         // 여행사 인증 전략으로 변경
-        currentStrategy = strategies.get("agency");
+        currentStrategy = this.agencyStrategy;
         
         System.out.print("agency email? ");
         String email = sc.nextLine();
@@ -132,11 +129,17 @@ public class LoginController {
      */
     public void travelAgencSignUp() {
         // 여행사 인증 전략으로 변경
-        currentStrategy = strategies.get("agency");
+        currentStrategy = this.agencyStrategy;
         boolean success = currentStrategy.register();
 
-        if (success && currentStrategy instanceof AgencyAuthenticationStrategy) {
-            this.lastSignedUpAgency = ((AgencyAuthenticationStrategy) currentStrategy).getLastRegisteredAgency();
+        // 인터페이스를 통해 마지막 가입 여행사 정보를 가져옴
+        if (success) {
+            Object registeredUser = currentStrategy.getLastRegisteredUser();
+            if (registeredUser instanceof TravelAgency) {
+                this.lastSignedUpAgency = (TravelAgency) registeredUser;
+            } else {
+                this.lastSignedUpAgency = null;
+            }
         } else {
             this.lastSignedUpAgency = null;
         }
@@ -146,8 +149,9 @@ public class LoginController {
      * 마지막으로 가입한 여행사 사용자 삭제 (Undo용)
      */
     public boolean deleteLastSignedUpAgency() {
-        if (this.lastSignedUpAgency != null && currentStrategy instanceof AgencyAuthenticationStrategy) {
-            boolean deleted = ((AgencyAuthenticationStrategy) currentStrategy).deleteAgency(this.lastSignedUpAgency.getEmail());
+        if (this.lastSignedUpAgency != null) {
+            // 인터페이스를 통해 여행사 삭제
+            boolean deleted = currentStrategy.deleteUser(this.lastSignedUpAgency.getEmail());
             if (deleted) {
                 System.out.println("Agency account for " + this.lastSignedUpAgency.getEmail() + " has been deleted.");
                 this.lastSignedUpAgency = null; // 삭제 후 초기화
@@ -157,16 +161,8 @@ public class LoginController {
                 return false;
             }
         }
-        System.out.println("No recently signed up agency to delete, or an issue occurred.");
+        System.out.println("No recently signed up agency to delete.");
         return false;
-    }
-
-    /**
-     * 마지막으로 가입한 여행사 정보를 반환합니다.
-     * @return 마지막으로 가입한 TravelAgency 객체, 없으면 null
-     */
-    public TravelAgency getLastSignedUpAgency() {
-        return this.lastSignedUpAgency;
     }
     
     /**
@@ -196,19 +192,8 @@ public class LoginController {
      * @return 로그인된 사용자 (없으면 null)
      */
     public RegisteredPassenger getCurrentUser() {
-        if (currentStrategy == strategies.get("user") && currentStrategy.isLoggedIn()) {
+        if (currentStrategy == this.userStrategy && currentStrategy.isLoggedIn()) {
             return (RegisteredPassenger) currentStrategy.getCurrentUserObject();
-        }
-        return null;
-    }
-
-    /**
-     * 현재 로그인된 여행사 반환
-     * @return 로그인된 여행사 (없으면 null)
-     */
-    public TravelAgency getCurrentAgency() {
-        if (currentStrategy == strategies.get("agency") && currentStrategy.isLoggedIn()) {
-            return (TravelAgency) currentStrategy.getCurrentUserObject();
         }
         return null;
     }

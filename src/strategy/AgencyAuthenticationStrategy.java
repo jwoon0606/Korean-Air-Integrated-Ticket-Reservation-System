@@ -68,6 +68,17 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
 
     /**
      * 마지막으로 가입 성공한 여행사 정보를 반환합니다.
+     * 인터페이스 메서드 구현
+     * @return 마지막 가입 여행사 객체, 없거나 실패 시 null
+     */
+    @Override
+    public Object getLastRegisteredUser() {
+        return this.lastRegisteredAgency;
+    }
+    
+    /**
+     * 마지막으로 가입 성공한 여행사 정보를 반환합니다.
+     * 기존 코드와의 호환성을 위해 유지
      * @return 마지막 가입 여행사 객체, 없거나 실패 시 null
      */
     public TravelAgency getLastRegisteredAgency() {
@@ -76,10 +87,12 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
 
     /**
      * 이메일 주소를 사용하여 여행사 정보를 삭제합니다.
+     * 인터페이스 메서드 구현
      * @param email 삭제할 여행사의 이메일
      * @return 삭제 성공 시 true, 실패 시 false
      */
-    public boolean deleteAgency(String email) {
+    @Override
+    public boolean deleteUser(String email) {
         TravelAgency agencyToRemove = null;
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email)) {
@@ -95,6 +108,16 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         }
         System.out.println("Agency " + email + " not found.\\n");
         return false;
+    }
+    
+    /**
+     * 이메일 주소를 사용하여 여행사 정보를 삭제합니다.
+     * 기존 코드와의 호환성을 위해 유지
+     * @param email 삭제할 여행사의 이메일
+     * @return 삭제 성공 시 true, 실패 시 false
+     */
+    public boolean deleteAgency(String email) {
+        return deleteUser(email);
     }
     
     @Override

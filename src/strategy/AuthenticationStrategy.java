@@ -53,4 +53,19 @@ public interface AuthenticationStrategy {
      * @return 로그인된 사용자 객체 (Object 타입으로 반환, 실제로는 RegisteredPassenger 또는 TravelAgency 등)
      */
     Object getCurrentUserObject();
+    
+    /**
+     * 이메일로 사용자를 삭제합니다.
+     * 
+     * @param email 삭제할 사용자의 이메일
+     * @return 삭제 성공 여부
+     */
+    boolean deleteUser(String email);
+    
+    /**
+     * 마지막으로 등록한 사용자 객체를 반환합니다.
+     * 
+     * @return 마지막으로 등록된 사용자 객체
+     */
+    Object getLastRegisteredUser();
 }
