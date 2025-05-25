@@ -11,6 +11,9 @@ import command.concrete_command.LogoutCommand;
 import command.concrete_command.SignUpCommand;
 import command.concrete_command.ViewUserInfoCommand;
 import command.invoker.CommandRegistry;
+import strategy.AgencyAuthenticationStrategy;
+import strategy.UserAuthenticationStrategy;
+import user.User;
 
 /**
  * Command Pattern의 Client 역할을 수행하는 메인 클래스
@@ -30,9 +33,12 @@ public class Main {
      */
     public void runProgram() {
         boolean[] programRunningState = {true}; // 프로그램 실행 상태를 저장하는 참조 변수
+
+        UserAuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
+        AgencyAuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
         
         // 컨트롤러 생성 (Receiver들)
-        LoginController loginController = new LoginController();
+        LoginController loginController = new LoginController(userStrategy, agencyStrategy);
         ReservationController reservationController = new ReservationController();
 
         // Invoker 생성

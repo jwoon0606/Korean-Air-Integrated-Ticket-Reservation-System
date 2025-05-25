@@ -1,7 +1,5 @@
 package controller;
-import strategy.AgencyAuthenticationStrategy;
 import strategy.AuthenticationStrategy;
-import strategy.UserAuthenticationStrategy;
 import user.RegisteredPassenger;
 import user.TravelAgency;
 import java.util.Scanner;
@@ -14,22 +12,14 @@ public class LoginController {
     private final Scanner sc = new Scanner(System.in);
     
     // 전략 패턴: 개별 인증 전략 인스턴스
-    private AuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
-    private AuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
+    private final AuthenticationStrategy userStrategy;
+    private final AuthenticationStrategy agencyStrategy;
     
     // 현재 선택된 인증 전략
     private AuthenticationStrategy currentStrategy;
     private RegisteredPassenger lastSignedUpUser; // 마지막으로 가입한 일반 사용자 정보 임시 저장
     private TravelAgency lastSignedUpAgency; // 마지막으로 가입한 여행사 정보 임시 저장
 
-    /**
-     * 기본 생성자: 내부적으로 인증 전략들을 초기화합니다.
-     */
-    public LoginController() {
-        // 기본값으로 일반 사용자 인증 전략 설정
-        currentStrategy = this.userStrategy;
-    }
-    
     /**
      * 의존성 주입을 위한 생성자: 외부에서 개별 전략 객체를 주입받습니다.
      * 테스트 용이성과 확장성을 위해 유지합니다.
