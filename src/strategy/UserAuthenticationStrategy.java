@@ -112,13 +112,6 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         return currentUser != null;
     }
     
-    /**
-     * 현재 로그인된 사용자 반환
-     */
-    public RegisteredPassenger getCurrentUser() {
-        return currentUser;
-    }
-    
     @Override
     public Object getCurrentUserObject() {
         return currentUser;

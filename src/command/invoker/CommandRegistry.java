@@ -13,21 +13,19 @@ public class CommandRegistry {
     
 
     public CommandRegistry() {
+        // 명령어 등록
         this.commands = new HashMap<>();
+
     }
 
     // 여기서 concrete command를 등록하고 사용할 준비를 합니다.
-    public void setCommand(int menuId, UndoableCommand command) {
+   public void setCommand(int menuId, UndoableCommand command) {
         commands.put(menuId, command);
-    }
+    }   
     
     // 사용자가 선택한 행동에 따라 어떤 command로 실행할 지를 결정하는 메소드입니다.
     public boolean executeCommand(int menuChoice, boolean isLoggedIn) {
-  
-        if (!hasCommand(menuChoice)) {
-            System.out.println("That option does not exist. Please choose a number from the menu.");
-            return false; 
-        }
+
         
         UndoableCommand selectedCommand = commands.get(menuChoice);
 
@@ -60,9 +58,6 @@ public class CommandRegistry {
         printHistoryStack(); // 스택 현황 출력 추가
     }
     
-    private boolean hasCommand(int menuId) {
-        return commands.containsKey(menuId);
-    }
     
     // 스택의 현재 상태를 출력하는 헬퍼 메소드
     private void printHistoryStack() {
