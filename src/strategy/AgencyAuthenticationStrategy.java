@@ -6,21 +6,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * 여행사 사용자를 위한 인증 전략 구현체
- * 전략 패턴의 ConcreteStrategy 역할을 합니다.
- */
 public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
     private ArrayList<TravelAgency> agencyList;
     private TravelAgency currentAgency = null;
     private final Scanner sc = new Scanner(System.in);
     private final String agencyFileName = "src/file/AgencyList.txt";
     private int agencyId = 0;
-    private TravelAgency lastRegisteredAgency = null; // 마지막으로 가입한 여행사 정보 저장
+    private TravelAgency lastRegisteredAgency = null;
 
-    /**
-     * 생성자: 여행사 데이터 로드
-     */
     public AgencyAuthenticationStrategy() {
         this.agencyList = new ArrayList<>();
         loadAgencyData();
@@ -42,15 +35,14 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
     @Override
     public boolean register() {
         System.out.println("Agency sign up page");
-        this.lastRegisteredAgency = null; // 메서드 시작 시 초기화
+        this.lastRegisteredAgency = null;
         int newId = ++this.agencyId;
         System.out.print("Agency name? "); String agencyName = sc.nextLine();
         System.out.print("Email? "); String email = sc.nextLine();
         
-        // 이메일 중복 체크
         for (TravelAgency agency : agencyList) {
             if (agency.getEmail().equals(email)) {
-                System.out.println("This email is already registered. Please use another email.\\n");
+                System.out.println("This email is already registered. Please use another email.\n");
                 return false;
             }
         }
@@ -62,26 +54,15 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         agencyList.add(newAgency);
         System.out.println(newAgency.getAgencyName() + " registered successfully");
         saveAgencyData();
-        this.lastRegisteredAgency = newAgency; // 성공 시 객체 저장
+        this.lastRegisteredAgency = newAgency;
         return true;
     }
 
-    /**
-     * 마지막으로 가입 성공한 여행사 정보를 반환합니다.
-     * 인터페이스 메서드 구현
-     * @return 마지막 가입 여행사 객체, 없거나 실패 시 null
-     */
     @Override
     public Object getLastRegisteredUser() {
         return this.lastRegisteredAgency;
     }
 
-    /**
-     * 이메일 주소를 사용하여 여행사 정보를 삭제합니다.
-     * 인터페이스 메서드 구현
-     * @param email 삭제할 여행사의 이메일
-     * @return 삭제 성공 시 true, 실패 시 false
-     */
     @Override
     public boolean deleteUser(String email) {
         TravelAgency agencyToRemove = null;
@@ -93,11 +74,11 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         }
         if (agencyToRemove != null) {
             agencyList.remove(agencyToRemove);
-            System.out.println("Agency " + email + " deleted successfully.\\n");
+            System.out.println("Agency " + email + " deleted successfully.\n");
             saveAgencyData();
             return true;
         }
-        System.out.println("Agency " + email + " not found.\\n");
+        System.out.println("Agency " + email + " not found.\n");
         return false;
     }
     
@@ -138,9 +119,6 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         return currentAgency;
     }
     
-    /**
-     * 여행사 데이터 저장
-     */
     public void saveAgencyData() {
         try (PrintWriter pw = new PrintWriter(agencyFileName)) {
             for (TravelAgency agency : agencyList) {
@@ -153,16 +131,12 @@ public class AgencyAuthenticationStrategy implements AuthenticationStrategy {
         }
     }
 
-    /**
-     * 여행사 데이터 로드
-     */
     private void loadAgencyData() {
         try {
             File file = new File(agencyFileName);
             
-            // 파일이 없으면 생성
             if (!file.exists()) {
-                file.getParentFile().mkdirs(); // 폴더가 없으면 생성
+                file.getParentFile().mkdirs();
                 file.createNewFile();
                 System.out.println("New agency data file created.\n");
                 return;

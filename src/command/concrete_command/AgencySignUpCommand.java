@@ -3,9 +3,6 @@ package command.concrete_command;
 import command.undo_command.UndoableCommand;
 import controller.LoginController;
 
-/**
- * 여행사 회원가입을 위한 명령 구현체
- */
 public class AgencySignUpCommand implements UndoableCommand {
     private LoginController loginController;
 
@@ -14,9 +11,9 @@ public class AgencySignUpCommand implements UndoableCommand {
     }
 
     @Override
-    public void execute() { // 반환 타입 void로 변경
-        System.out.println(); // UI 간격용 빈 줄
-        loginController.travelAgencSignUp(); // 회원가입 시도
+    public void execute() { 
+        System.out.println(); 
+        loginController.travelAgencSignUp(); 
     }
 
     @Override
@@ -35,7 +32,6 @@ public class AgencySignUpCommand implements UndoableCommand {
 
     @Override
     public void undo() {
-        // LoginController를 통해 마지막 가입 여행사 삭제
         System.out.println("Attempting to undo agency sign up...");
         boolean undone = loginController.deleteLastSignedUpAgency();
         if (undone) {

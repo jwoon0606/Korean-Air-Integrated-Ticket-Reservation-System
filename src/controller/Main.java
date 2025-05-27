@@ -5,6 +5,7 @@ import command.concrete_command.AgencyLoginCommand;
 import command.concrete_command.AgencySignUpCommand;
 import command.concrete_command.BookFlightCommand;
 import command.concrete_command.CheckReservationInfoCommand;
+import command.concrete_command.DeleteReservationCommand;
 import command.concrete_command.ExitCommand;
 import command.concrete_command.LoginCommand;
 import command.concrete_command.LogoutCommand;
@@ -12,6 +13,7 @@ import command.concrete_command.SignUpCommand;
 import command.concrete_command.ViewUserInfoCommand;
 import command.invoker.CommandRegistry;
 import strategy.AgencyAuthenticationStrategy;
+import strategy.AuthenticationStrategy;
 import strategy.ReservationLoadStrategy;
 import strategy.ReservationSaveStrategy;
 import strategy.UserAuthenticationStrategy;
@@ -28,26 +30,19 @@ public class Main {
         main.runProgram();
     }
 
-    /**
-     * 프로그램 실행 메소드
-     * Client로서 Invoker에게 명령 실행을 요청
-     */
     public void runProgram() {
-        boolean[] programRunningState = {true}; // 프로그램 실행 상태를 저장하는 참조 변수
+        boolean[] programRunningState = {true}; 
 
-        UserAuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
-        AgencyAuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
+        AuthenticationStrategy userStrategy = new UserAuthenticationStrategy();
+        AuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
         
-        // 컨트롤러 생성 (Receiver들)
         LoginController loginController = new LoginController(userStrategy, agencyStrategy);
         ReservationController reservationController = ReservationController.getReservationController();
         reservationController.setLoadStrategy(new ReservationLoadStrategy());
         reservationController.setSaveStrategy(new ReservationSaveStrategy());
 
-        // Invoker 생성
         CommandRegistry invoker = new CommandRegistry();
-        
-        // Command 객체들 생성 및 등록
+
         invoker.setCommand(0, new ExitCommand(programRunningState));
         invoker.setCommand(1, new LoginCommand(loginController));
         invoker.setCommand(2, new SignUpCommand(loginController));
@@ -55,8 +50,9 @@ public class Main {
         invoker.setCommand(4, new AgencySignUpCommand(loginController));
         invoker.setCommand(5, new LogoutCommand(loginController));
         invoker.setCommand(6, new ViewUserInfoCommand(loginController));
-        invoker.setCommand(7, new BookFlightCommand(reservationController));
+        invoker.setCommand(7, new BookFlightCommand(reservationController, loginController)); // Pass LoginController to BookFlightCommand
         invoker.setCommand(8, new CheckReservationInfoCommand(loginController, reservationController));
+        invoker.setCommand(9, new DeleteReservationCommand(reservationController, loginController)); // Pass LoginController to DeleteReservationCommand
 
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
         

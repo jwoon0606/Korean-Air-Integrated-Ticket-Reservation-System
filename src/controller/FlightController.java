@@ -1,11 +1,6 @@
 package controller;
-
-import config.Constants;
 import dto.Flight;
-import dto.Seat;
 import strategy.LoadStrategy;
-
-import java.io.*;
 import java.util.*;
 
 public class FlightController {

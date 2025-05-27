@@ -19,7 +19,7 @@ public class ReservationController {
     private LoadStrategy loadStrategy;
     private SaveStrategy saveStrategy;
     private static ReservationController reservationController = null;
-    private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; // 예약 정보 파일 경로
+    private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; 
     private final Scanner scanner;
     private final FlightController flightController;
     private static final List<List<String>> COUNTRY_DATA = List.of(
@@ -86,7 +86,7 @@ public class ReservationController {
     public void bookFlight() {
         ArrayList<ReservedFlight> flights = selectFlight();
 
-        System.out.println("\nWould you like to proceed with reservation? (yes/no)");
+        System.out.println("\\nWould you like to proceed with reservation? (yes/no)");
         scanner.nextLine(); // consume newline
         String proceed = scanner.nextLine().trim();
 
@@ -98,26 +98,79 @@ public class ReservationController {
         ReservationForm form = getReservationDetails(flights);
         saveReservationToFile(form);
 
-        System.out.println("\nReservation completed and saved successfully!");
+        System.out.println("\\nReservation completed and saved successfully!");
     }
 
     /**
-     * 가장 최근의 예약을 취소합니다.
-     * 예약 목록에서 마지막 예약을 제거하고 변경된 내용을 파일에 덮어씁니다.
-     * @return 예약 취소에 성공하면 true, 그렇지 않으면 false를 반환합니다.
+     * Performs the cancellation of the most recent booking.
+     * Removes the last reservation from the list and overwrites the file.
+     * @return The ReservationForm that was cancelled, or null if no reservation was found or an error occurred.
      */
-    public boolean cancelMostRecentBooking() {
+    public ReservationForm deleteReservaton() {
         List<ReservationForm> reservations = loadAllReservations();
 
         if (reservations.isEmpty()) {
-            // 메시지는 BookFlightCommand에서 처리합니다.
-            return false;
+            return null; 
         }
 
-        // 가장 최근 예약 (리스트의 마지막 요소) 제거
-        reservations.remove(reservations.size() - 1);
+        ReservationForm cancelledForm = reservations.remove(reservations.size() - 1);
 
-        // 변경된 예약 목록을 파일에 다시 쓴다 (덮어쓰기)
+        if (overwriteAllReservations(reservations)) {
+            return cancelledForm;
+        } else {
+            return null; 
+        }
+    }
+
+    /**
+     * Deletes the most recent reservation for a specific user.
+     * @param userEmail The email of the user whose reservation is to be cancelled.
+     * @return The ReservationForm that was cancelled, or null if no reservation was found for the user or an error occurred.
+     */
+    public ReservationForm deleteReservationForUser(String userEmail) {
+        List<ReservationForm> allReservations = loadAllReservations();
+        List<ReservationForm> userReservations = new ArrayList<>();
+        ReservationForm reservationToCancel = null;
+
+        // Find all reservations for the given user and identify the last one
+        int lastUserReservationIndexInAll = -1;
+        for (int i = 0; i < allReservations.size(); i++) {
+            ReservationForm r = allReservations.get(i);
+            if (r.getEmail().equalsIgnoreCase(userEmail)) {
+                userReservations.add(r);
+                lastUserReservationIndexInAll = i; // Keep track of the last one found for this user
+            }
+        }
+
+        if (userReservations.isEmpty() || lastUserReservationIndexInAll == -1) {
+            return null; // No reservations found for this user
+        }
+
+        // The reservation to cancel is the one at lastUserReservationIndexInAll
+        reservationToCancel = allReservations.remove(lastUserReservationIndexInAll);
+
+        if (overwriteAllReservations(allReservations)) {
+            return reservationToCancel;
+        } else {
+            // If saving fails, we should ideally add it back to maintain consistency.
+            // For simplicity here, we just return null indicating failure.
+            // To be robust, you might want to re-insert reservationToCancel at lastUserReservationIndexInAll
+            return null; 
+        }
+    }
+    
+    /**
+     * Adds a specific reservation back to the list and saves it.
+     * Used for undoing a deletion.
+     * @param form The ReservationForm to add.
+     * @return true if the reservation was added and saved successfully, false otherwise.
+     */
+    public boolean restoreReservation(ReservationForm form) {
+        if (form == null) {
+            return false;
+        }
+        List<ReservationForm> reservations = loadAllReservations();
+        reservations.add(form); // Add to the end, or sort if order matters and is maintained
         return overwriteAllReservations(reservations);
     }
 

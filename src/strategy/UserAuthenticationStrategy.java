@@ -6,21 +6,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * 등록된 일반 사용자를 위한 인증 전략 구현체
- * 전략 패턴의 ConcreteStrategy 역할을 합니다.
- */
 public class UserAuthenticationStrategy implements AuthenticationStrategy {
     private ArrayList<RegisteredPassenger> userList;
     private RegisteredPassenger currentUser = null;
     private final Scanner sc = new Scanner(System.in);
     private final String fileName = "src/file/UserList.txt";
     private int id = 0;
-    private RegisteredPassenger lastRegisteredUser = null; // 새로 추가된 필드
+    private RegisteredPassenger lastRegisteredUser = null;
 
-    /**
-     * 생성자: 사용자 데이터 로드
-     */
     public UserAuthenticationStrategy() {
         this.userList = new ArrayList<>();
         loadData();
@@ -42,16 +35,15 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
     @Override
     public boolean register() {
         System.out.println("Sign up page");
-        this.lastRegisteredUser = null; // 메서드 시작 시 초기화
+        this.lastRegisteredUser = null;
         int newId = ++this.id;
         System.out.print("name? "); String name = sc.nextLine();
         System.out.print("email? "); String email = sc.nextLine();
         
-        // 이메일 중복 체크
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email)) {
-                System.out.println("This email is already registered. Please use another email.\\\\n");
-                return false; // 실패 시 false 반환
+                System.out.println("This email is already registered. Please use another email.\\n");
+                return false;
             }
         }
         
@@ -64,15 +56,10 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         userList.add(newUser);
         System.out.println(newUser.getName() + " registered successfully");
         saveData();
-        this.lastRegisteredUser = newUser; // 성공 시 객체 저장
-        return true; // 성공 시 true 반환
+        this.lastRegisteredUser = newUser;
+        return true;
     }
 
-    /**
-     * 마지막으로 가입 성공한 사용자 정보를 반환합니다.
-     * 인터페이스 메서드 구현
-     * @return 마지막 가입 사용자 객체, 없거나 실패 시 null
-     */
     @Override
     public Object getLastRegisteredUser() {
         return this.lastRegisteredUser;
@@ -117,9 +104,6 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         return currentUser;
     }
     
-    /**
-     * 사용자 데이터 저장
-     */
     public void saveData() {
         try (PrintWriter pw = new PrintWriter(fileName)) {
             for (RegisteredPassenger user : userList) {
@@ -133,16 +117,12 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         }
     }
 
-    /**
-     * 사용자 데이터 로드
-     */
     private void loadData() {
         try {
             File file = new File(fileName);
             
-            // 파일이 없으면 생성
             if (!file.exists()) {
-                file.getParentFile().mkdirs(); // 폴더가 없으면 생성
+                file.getParentFile().mkdirs();
                 file.createNewFile();
                 System.out.println("New user data file created.\n");
                 return;
