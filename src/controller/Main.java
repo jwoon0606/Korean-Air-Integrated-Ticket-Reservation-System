@@ -12,6 +12,8 @@ import command.concrete_command.SignUpCommand;
 import command.concrete_command.ViewUserInfoCommand;
 import command.invoker.CommandRegistry;
 import strategy.AgencyAuthenticationStrategy;
+import strategy.ReservationLoadStrategy;
+import strategy.ReservationSaveStrategy;
 import strategy.UserAuthenticationStrategy;
 
 /**
@@ -39,6 +41,8 @@ public class Main {
         // 컨트롤러 생성 (Receiver들)
         LoginController loginController = new LoginController(userStrategy, agencyStrategy);
         ReservationController reservationController = ReservationController.getReservationController();
+        reservationController.setLoadStrategy(new ReservationLoadStrategy());
+        reservationController.setSaveStrategy(new ReservationSaveStrategy());
 
         // Invoker 생성
         CommandRegistry invoker = new CommandRegistry();

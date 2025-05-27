@@ -5,6 +5,9 @@ import dto.ReservationFormFactory;
 import dto.ReservationForm;
 import dto.ReservedFlight;
 import dto.Seat;
+import strategy.FlightLoadStrategy;
+import strategy.LoadStrategy;
+import strategy.SaveStrategy;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,10 +16,12 @@ import java.io.*;
 import java.util.*;
 
 public class ReservationController {
+    private LoadStrategy loadStrategy;
+    private SaveStrategy saveStrategy;
     private static ReservationController reservationController = null;
+    private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; // 예약 정보 파일 경로
     private final Scanner scanner;
     private final FlightController flightController;
-    private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; // 예약 정보 파일 경로
     private static final List<List<String>> COUNTRY_DATA = List.of(
             List.of("Republic of Korea"),
             List.of("China", "Japan", "Mongolia"),
@@ -30,6 +35,14 @@ public class ReservationController {
             List.of("South Africa", "Egypt", "Nigeria")
     );
 
+    public void setLoadStrategy(LoadStrategy loadStrategy) {
+        this.loadStrategy = loadStrategy;
+    }
+
+    public void setSaveStrategy(SaveStrategy saveStrategy) {
+        this.saveStrategy = saveStrategy;
+    }
+
     public synchronized static ReservationController getReservationController() {
         if(reservationController == null) {
             reservationController = new ReservationController();
@@ -40,30 +53,12 @@ public class ReservationController {
     private ReservationController() {
         scanner = new Scanner(System.in);
         flightController = new FlightController();
+        flightController.setLoadStrategy(new FlightLoadStrategy());
     }
-    
+
  // 1. 텍스트 파일에서 ReservationForm 목록 생성
     public List<ReservationForm> loadAllReservations() {
-        List<ReservationForm> reservations = new ArrayList<>();
-        List<String> currentBlock = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(RESERVATION_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.equals("----")) {
-                    reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
-                    currentBlock.clear();
-                } else {
-                    currentBlock.add(line);
-                }
-            }
-            if (!currentBlock.isEmpty()) {
-                reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
-            }
-        } catch (IOException e) {
-            System.out.println("[오류] 예약 파일 읽기 실패: " + e.getMessage());
-        }
-        return reservations;
+        return loadStrategy.load();
     }
 
     // 2. Registered 사용자: 이메일 기반 필터
@@ -446,25 +441,6 @@ public class ReservationController {
 
 
     private void saveReservationToFile(ReservationForm form) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RESERVATION_FILE, true))) {
-            writer.write("Reservation ID: " + form.getId() + "\n");
-            writer.write("Passenger Name: " + form.getName() + "\n");
-            writer.write("Birth Date: " + form.getBirthDate() + "\n");
-            writer.write("Gender: " + form.getGender() + "\n");
-            writer.write("Contact: +" + form.getCountryCode() + " " + form.getMobileNumber() + ", " + form.getEmail() + "\n");
-            writer.write("Language: " + form.getLanguage() + "\n");
-            writer.write("Guest Password: " + form.getRegisterGuestPassword() + "\n");
-
-            for (ReservedFlight rf : form.getReservedFlights()) {
-                Flight flight = rf.getFlight();
-                writer.write("Flight: " + flight.getFlightNumber() + ", " + flight.getDepartureDate() + ", "
-                        + flight.getDeparture() + " → " + flight.getDestination() + "\n");
-                writer.write("Class: " + rf.getCabinClass() + ", Seats Reserved: " + rf.getSeatCount() + "\n");
-            }
-
-            writer.write("----\n");
-        } catch (IOException e) {
-            System.out.println("Failed to save reservation: " + e.getMessage());
-        }
+        saveStrategy.save(form);
     }
 }
