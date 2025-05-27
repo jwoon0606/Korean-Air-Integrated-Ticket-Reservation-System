@@ -38,7 +38,7 @@ public class Main {
         
         // 컨트롤러 생성 (Receiver들)
         LoginController loginController = new LoginController(userStrategy, agencyStrategy);
-        ReservationController reservationController = new ReservationController();
+        ReservationController reservationController = ReservationController.getReservationController();
 
         // Invoker 생성
         CommandRegistry invoker = new CommandRegistry();

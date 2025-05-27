@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 
 public class ReservationController {
+    private static ReservationController reservationController = null;
     private final Scanner scanner;
     private final FlightController flightController;
     private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; // 예약 정보 파일 경로
@@ -29,7 +30,14 @@ public class ReservationController {
             List.of("South Africa", "Egypt", "Nigeria")
     );
 
-    public ReservationController() {
+    public synchronized static ReservationController getReservationController() {
+        if(reservationController == null) {
+            reservationController = new ReservationController();
+        }
+        return reservationController;
+    }
+
+    private ReservationController() {
         scanner = new Scanner(System.in);
         flightController = new FlightController();
     }
