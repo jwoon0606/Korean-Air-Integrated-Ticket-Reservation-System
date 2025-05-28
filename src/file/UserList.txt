@@ -7,4 +7,4 @@
 8,minchan,alscksqkr@gmail.com,alscks123,010-6678-4110,male,1999.11.23
 9,민찬,alscksqkr@naver.com,alscks123,010-6678-4110,male,99.11.23
 10,psy,qkrtnsdyd,qkr,010,m,1996
-11,aaaa,aaa,aaa,aaa,aaa,aaa
+11,aaa,aaa,aaa,123,aaa,123

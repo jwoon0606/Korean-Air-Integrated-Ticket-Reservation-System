@@ -137,7 +137,7 @@ public class ReservationForm {
         return reservedFlights;
     }
 
-    public void setReservedFlightsFlights(ArrayList<ReservedFlight> reservedFlights) {
+    public void setReservedFlights(ArrayList<ReservedFlight> reservedFlights) {
         this.reservedFlights = reservedFlights;
     }
     

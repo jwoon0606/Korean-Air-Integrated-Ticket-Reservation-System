@@ -90,7 +90,7 @@ public class ReservationFormFactory {
             }
         }
 
-        form.setReservedFlightsFlights(new ArrayList<>(flights));
+        form.setReservedFlights(new ArrayList<>(flights));
         return form;
     }
 }

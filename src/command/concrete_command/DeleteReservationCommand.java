@@ -65,6 +65,6 @@ public class DeleteReservationCommand implements UndoableCommand {
 
     @Override
     public String getMenuText() {
-        return "9. Cancel My Most Recent Reservation"; 
+        return "9. Delete My Most Recent Reservation"; 
     }
 }

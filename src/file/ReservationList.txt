@@ -1,36 +1,12 @@
-Reservation ID: 1
-Passenger Name: 1
-Birth Date: 1
-Gender: 1
-Contact: ++++++++++++++++++++++++++++++++++1 1, 1
-Language: 1
-Guest Password: 1
+Reservation ID: 2618261b-4a0e-4084-b01e-5ecb87260745
+Passenger Name: aaaa
+Birth Date: 1999-11-23
+Gender: M
+Contact: +++82 01066784110, aaaa
+Language: ko
+Guest Password: 123
 Flight: FL123, 2025-06-01, Republic of Korea → United States
 Class: Economy, Seats Reserved: 1
 Flight: FL125, 2025-06-10, United States → Republic of Korea
-Class: Economy, Seats Reserved: 1
-----
-Reservation ID: ac4c078c-f176-4a2e-9f47-586cfe9f1b9c
-Passenger Name: Nam Jongwoon
-Birth Date: 2001-06-06
-Gender: M
-Contact: ++++++++++++++++++++++++++++++++++82 010-4473-5711, 22000220@handong.ac.kr
-Language: Korean
-Guest Password: 1
-Flight: FL123, 2025-06-01, Republic of Korea → United States
-Class: Economy, Seats Reserved: 1
-Flight: FL125, 2025-06-10, United States → Republic of Korea
-Class: Economy, Seats Reserved: 1
-----
-Reservation ID: f14b1055-f037-4fd5-9262-8c95d953aecc
-Passenger Name: Parksoonyong
-Birth Date: 1996-01-11
-Gender: M
-Contact: +++++++++++++++++++++++++++++82 010-3371-3978, tkdtp123@naver.com
-Language: korean
-Guest Password: 1
-Flight: FL124, 2025-06-02, Republic of Korea → United Kingdom
-Class: Economy, Seats Reserved: 1
-Flight: FL126, 2025-06-15, United Kingdom → Republic of Korea
 Class: Economy, Seats Reserved: 1
 ----
