@@ -38,7 +38,7 @@ public class Main {
         
         LoginController loginController = new LoginController(userStrategy, agencyStrategy);
         ReservationController reservationController = ReservationController.getReservationController(loginController);
-        reservationController.setLoadStrategy(new ReservationLoadStrategy());
+        reservationController.setLoadStrategy(new ReservationLoadStrategy(loginController));
         reservationController.setSaveStrategy(new ReservationSaveStrategy());
 
         CommandRegistry invoker = new CommandRegistry();

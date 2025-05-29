@@ -7,6 +7,7 @@ import user.RegisteredPassenger;
 import strategy.FlightLoadStrategy;
 import strategy.LoadStrategy;
 import strategy.SaveStrategy;
+import factory.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -67,10 +68,15 @@ public class ReservationController {
     public List<ReservationForm> findReservationsByEmail(String email) {
         List<ReservationForm> matched = new ArrayList<>();
         for (ReservationForm r : loadAllReservations()) {
-            if (r.getEmail().equalsIgnoreCase(email)) {
+            if (r.getEmail() != null && r.getEmail().equalsIgnoreCase(email)) {
                 matched.add(r);
             }
         }
+
+        if (matched.isEmpty()) {
+            System.out.println("[notice] No Reservation by this email");
+        }
+
         return matched;
     }
 
@@ -84,11 +90,21 @@ public class ReservationController {
         return null;
     }
     
+    private ReservationFactory getFactoryForCurrentUser() {
+        User user = loginController.getCurrentUser();
+        if (user instanceof RegisteredPassenger rp) {
+            return new RegisteredReservationFactory(rp);
+        } else if (user instanceof GuestPassenger) {
+            return new GuestReservationFactory();
+        } else {
+            throw new IllegalStateException("[error] unchecked user type ");
+        }
+    }
 
     public void bookFlight() {
         ArrayList<ReservedFlight> flights = selectFlight();
 
-        System.out.println("\\nWould you like to proceed with reservation? (yes/no)");
+        System.out.println("\nWould you like to proceed with reservation? (yes/no)");
         scanner.nextLine(); // consume newline
         String proceed = scanner.nextLine().trim();
 
@@ -97,11 +113,19 @@ public class ReservationController {
             return;
         }
 
-        ReservationForm form = getReservationDetails(flights);
+        // 팩토리를 통해 예약 정보 생성
+        ReservationFactory factory = getFactoryForCurrentUser();  // 현재 로그인된 사용자 기준
+        ReservationForm form = factory.create(scanner, flights);
+
+        // 예약 정보 저장
         saveReservationToFile(form);
 
-        System.out.println("\\nReservation completed and saved successfully!");
+        // 예약 ID 출력 (특히 Guest에게 필요)
+        System.out.println("\nReservation completed and saved successfully!");
+        System.out.println("Your reservation ID is: " + form.getId());
+        System.out.println("Please keep this ID to check or manage your reservation later.");
     }
+
 
     /**
      * Deletes the most recent reservation for a specific user.
@@ -118,14 +142,15 @@ public class ReservationController {
             ReservationForm r = allReservations.get(i);
             if (r.getEmail().equalsIgnoreCase(userEmail)) {
                 userReservations.add(r);
-                lastUserReservationIndexInAll = i; 
+                lastUserReservationIndexInAll = i;
             }
         }
 
         if (userReservations.isEmpty() || lastUserReservationIndexInAll == -1) {
-            return null; 
+            return null;
         }
 
+        // The reservation to cancel is the one at lastUserReservationIndexInAll
         reservationToCancel = allReservations.remove(lastUserReservationIndexInAll);
 
         if (overwriteAllReservations(allReservations)) {
@@ -146,7 +171,7 @@ public class ReservationController {
             return false;
         }
         List<ReservationForm> reservations = loadAllReservations();
-        reservations.add(form);
+        reservations.add(form); // Add to the end, or sort if order matters and is maintained
         return overwriteAllReservations(reservations);
     }
 
@@ -420,52 +445,6 @@ public class ReservationController {
             case 3 -> "First";
             default -> "Economy";
         };
-    }
-
-    public ReservationForm getReservationDetails(ArrayList<ReservedFlight> reservedFlights) {
-        System.out.println("\n** Passenger Details **");
-
-        String id = UUID.randomUUID().toString();  // 시스템이 자동으로 ID 생성
-
-        System.out.print("Enter your full name: ");
-        String name = scanner.nextLine();
-
-        System.out.print("Enter your gender (M/F): ");
-        String gender = scanner.nextLine();
-
-        System.out.print("Enter your birth date (YYYY-MM-DD): ");
-        String birthDate = scanner.nextLine();
-
-        System.out.print("Enter your mileage airline: ");
-        String carrierForMileageAccumulation = scanner.nextLine();
-
-        System.out.print("Enter your membership number: ");
-        String membershipNumber = scanner.nextLine();
-
-        System.out.print("Enter your country code (e.g., 82): ");
-        String countryCode = scanner.nextLine();
-
-        System.out.print("Enter your mobile number: ");
-        String mobileNumber = scanner.nextLine();
-
-        System.out.print("Enter your email: ");
-        String email = scanner.nextLine();
-
-        System.out.print("Preferred language: ");
-        String language = scanner.nextLine();
-
-        System.out.print("Enter guest password: ");
-        String registerGuestPassword = scanner.nextLine();
-
-        System.out.println("\nYour reservation ID is: " + id);
-        System.out.println("Please keep this ID to check or manage your reservation later.");
-
-        return new ReservationForm(
-                id, name, gender, birthDate,
-                carrierForMileageAccumulation, membershipNumber,
-                countryCode, mobileNumber, email, language,
-                registerGuestPassword, reservedFlights
-        );
     }
 
 

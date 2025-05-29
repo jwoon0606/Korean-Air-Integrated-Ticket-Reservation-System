@@ -2,9 +2,48 @@ Reservation ID: 2618261b-4a0e-4084-b01e-5ecb87260745
 Passenger Name: aaaa
 Birth Date: 1999-11-23
 Gender: M
-Contact: +++82 01066784110, aaaa
+Contact: 01066784110, aaaa
 Language: ko
 Guest Password: 123
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: 2fd1223d-c73c-4ba5-8093-369d2558dad1
+Passenger Name: parksy
+Birth Date: 1996
+Gender: m
+Contact: 010333, tkdtp123
+Language: kor
+Guest Password: 1234
+Mileage: 123
+Membership Number: 124124
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: 3c928561-aac2-4397-a43d-d559e31957f5
+Passenger Name: parsy
+Birth Date: 1996-01-11
+Gender: M
+Contact: 010-3371-3978, tkdtp123
+Language: kor
+Mileage: korair
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: 70f0fb9c-13e0-46d9-8c10-70c660e131d9
+Passenger Name: sy
+Birth Date: 1996-01-11
+Gender: male
+Contact: 010-3371-3978, tkdtp123@naver.com
+Language: kor
+Mileage: korair
+Membership Number: 7577369c
 Flight: FL123, 2025-06-01, Republic of Korea → United States
 Class: Economy, Seats Reserved: 1
 Flight: FL125, 2025-06-10, United States → Republic of Korea
