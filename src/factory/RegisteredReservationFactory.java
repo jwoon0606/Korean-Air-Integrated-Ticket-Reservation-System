@@ -4,6 +4,7 @@ import dto.*;
 import user.RegisteredPassenger;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class RegisteredReservationFactory extends ReservationFactory {
 
@@ -15,7 +16,7 @@ public class RegisteredReservationFactory extends ReservationFactory {
 
     @Override
     protected ReservationForm createFromInput(Scanner scanner, List<ReservedFlight> flights) {
-        System.out.println("\n[Registered User Reservation]");
+        System.out.println("\n[Registered Passenger Reservation Details Input]");
 
         String id = UUID.randomUUID().toString();
 
@@ -49,41 +50,59 @@ public class RegisteredReservationFactory extends ReservationFactory {
         ReservationForm form = new ReservationForm();
         List<ReservedFlight> flights = new ArrayList<>();
 
+        Map<String, BiConsumer<String, ReservationForm>> handlers = new LinkedHashMap<>();
+
+        handlers.put("Reservation ID: ", (line, f) -> f.setId(extractValue(line)));
+        handlers.put("Passenger Name: ", (line, f) -> f.setName(extractValue(line)));
+        handlers.put("Birth Date: ", (line, f) -> f.setBirthDate(extractValue(line)));
+        handlers.put("Gender: ", (line, f) -> f.setGender(extractValue(line)));
+        handlers.put("Contact: ", (line, f) -> {
+            String[] parts = extractValue(line).split(", ");
+            f.setMobileNumber(parts[0].trim());
+            if (parts.length > 1) {
+                f.setEmail(parts[1].trim());
+            }
+        });
+        handlers.put("Language: ", (line, f) -> f.setLanguage(extractValue(line)));
+        handlers.put("Mileage: ", (line, f) -> f.setCarrierForMileageAccumulation(extractValue(line)));
+        handlers.put("Membership Number: ", (line, f) -> f.setMembershipNumber(extractValue(line)));
+
         for (String line : lines) {
-            if (line.startsWith("Reservation ID: ")) {
-                form.setId(line.split(": ")[1]);
-            } else if (line.startsWith("Passenger Name: ")) {
-                form.setName(line.split(": ")[1]);
-            } else if (line.startsWith("Birth Date: ")) {
-                form.setBirthDate(line.split(": ")[1]);
-            } else if (line.startsWith("Gender: ")) {
-                form.setGender(line.split(": ")[1]);
-            } else if (line.startsWith("Contact: ")) {
-                String[] parts = line.split(": ")[1].split(", ");
-                form.setMobileNumber(parts[0].trim());
-                form.setEmail(parts.length > 1 ? parts[1].trim() : "");
-            } else if (line.startsWith("Language: ")) {
-                form.setLanguage(line.split(": ")[1]);
-            } else if (line.startsWith("Mileage: ")) {
-                form.setCarrierForMileageAccumulation(line.split(": ")[1]);
-            } else if (line.startsWith("Membership Number: ")) {
-                form.setMembershipNumber(line.split(": ")[1]);
-            } else if (line.startsWith("Flight: ")) {
-                String[] parts = line.split(": ")[1].split(", ");
-                String[] route = parts[2].split(" → ");
-                Flight flight = new Flight(parts[0], route[0].trim(), route[1].trim(), parts[1], new ArrayList<>());
-                ReservedFlight rf = new ReservedFlight();
-                rf.setFlight(flight);
-                flights.add(rf);
-            } else if (line.startsWith("Class: ")) {
-                ReservedFlight last = flights.get(flights.size() - 1);
-                String[] seatParts = line.split(", ");
-                last.setCabinClass(seatParts[0].split(": ")[1]);
-                last.setSeatCount(Integer.parseInt(seatParts[1].split(": ")[1]));
+            boolean handled = false;
+            for (Map.Entry<String, BiConsumer<String, ReservationForm>> entry : handlers.entrySet()) {
+                if (line.startsWith(entry.getKey())) {
+                    entry.getValue().accept(line, form);
+                    handled = true;
+                    break;
+                }
+            }
+
+            if (!handled) {
+                if (line.startsWith("Flight: ")) {
+                    String[] parts = extractValue(line).split(", ");
+                    if (parts.length >= 3) {
+                        String[] route = parts[2].split(" → ");
+                        Flight flight = new Flight(parts[0], route[0].trim(), route[1].trim(), parts[1], new ArrayList<>());
+                        ReservedFlight rf = new ReservedFlight();
+                        rf.setFlight(flight);
+                        flights.add(rf);
+                    }
+                } else if (line.startsWith("Class: ")) {
+                    if (!flights.isEmpty()) {
+                        ReservedFlight last = flights.get(flights.size() - 1);
+                        String[] seatParts = line.split(", ");
+                        last.setCabinClass(seatParts[0].split(": ")[1].trim());
+                        last.setSeatCount(Integer.parseInt(seatParts[1].split(": ")[1].trim()));
+                    }
+                }
             }
         }
 
         form.setReservedFlights(new ArrayList<>(flights));
         return form;
+    }
+
+    private String extractValue(String line) {
+        return line.substring(line.indexOf(": ") + 2).trim();
     }
 }
