@@ -3,8 +3,8 @@ package command.concrete_command;
 import command.undo_command.UndoableCommand;
 import controller.LoginController; // Added import
 import controller.ReservationController;
+import user.*; // Modified import about registered user
 import dto.ReservationForm;
-import user.RegisteredPassenger; // Added import
 
 public class DeleteReservationCommand implements UndoableCommand {
     private ReservationController reservationController;
@@ -25,7 +25,7 @@ public class DeleteReservationCommand implements UndoableCommand {
             return;
         }
 
-        RegisteredPassenger currentUser = loginController.getCurrentUser();
+        User currentUser = loginController.getCurrentUser();
         if (currentUser == null) {
             System.out.println("\nCould not identify the current user.");
             this.lastCancelledReservation = null;

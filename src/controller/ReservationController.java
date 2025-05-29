@@ -1,10 +1,9 @@
 package controller;
 
-import dto.Flight;
-import dto.ReservationFormFactory;
-import dto.ReservationForm;
-import dto.ReservedFlight;
-import dto.Seat;
+import dto.*;
+import user.User;
+import user.GuestPassenger;
+import user.RegisteredPassenger;
 import strategy.FlightLoadStrategy;
 import strategy.LoadStrategy;
 import strategy.SaveStrategy;
@@ -14,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationController {
     private LoadStrategy loadStrategy;
@@ -22,6 +22,7 @@ public class ReservationController {
     private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; 
     private final Scanner scanner;
     private final FlightController flightController;
+    private final LoginController loginController; // 현 user 판별용
     private static final List<List<String>> COUNTRY_DATA = List.of(
             List.of("Republic of Korea"),
             List.of("China", "Japan", "Mongolia"),
@@ -43,14 +44,15 @@ public class ReservationController {
         this.saveStrategy = saveStrategy;
     }
 
-    public synchronized static ReservationController getReservationController() {
+    public synchronized static ReservationController getReservationController(LoginController loginController) {
         if(reservationController == null) {
-            reservationController = new ReservationController();
+            reservationController = new ReservationController(loginController);
         }
         return reservationController;
     }
 
-    private ReservationController() {
+    private ReservationController(LoginController loginController) {
+    	this.loginController = loginController;
         scanner = new Scanner(System.in);
         flightController = new FlightController();
         flightController.setLoadStrategy(new FlightLoadStrategy());

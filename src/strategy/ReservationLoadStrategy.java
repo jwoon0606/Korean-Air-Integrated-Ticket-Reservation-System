@@ -2,7 +2,7 @@ package strategy;
 
 import config.Constants;
 import dto.ReservationForm;
-import dto.ReservationFormFactory;
+import factory.ReservationFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,14 +20,14 @@ public class ReservationLoadStrategy implements LoadStrategy{
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.equals("----")) {
-                    reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
+                    reservations.add(ReservationFactory.fromTextBlock(currentBlock));
                     currentBlock.clear();
                 } else {
                     currentBlock.add(line);
                 }
             }
             if (!currentBlock.isEmpty()) {
-                reservations.add(ReservationFormFactory.fromTextBlock(currentBlock));
+                reservations.add(ReservationFactory.fromTextBlock(currentBlock));
             }
         } catch (IOException e) {
             System.out.println("[오류] 예약 파일 읽기 실패: " + e.getMessage());
