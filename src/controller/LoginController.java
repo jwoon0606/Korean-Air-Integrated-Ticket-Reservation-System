@@ -1,5 +1,6 @@
 package controller;
 import strategy.AuthenticationStrategy;
+import user.*;
 import user.RegisteredPassenger;
 import user.TravelAgency;
 import java.util.Scanner;
@@ -114,11 +115,14 @@ public class LoginController {
         return currentStrategy != null && currentStrategy.isLoggedIn();
     }
 
-    public RegisteredPassenger getCurrentUser() {
-        if (currentStrategy == this.userStrategy && currentStrategy.isLoggedIn()) {
-            return (RegisteredPassenger) currentStrategy.getCurrentUserObject();
-        }
-        return null;
+    public User getCurrentUser() {
+        if (currentStrategy != null && currentStrategy.isLoggedIn()) {
+            Object user = currentStrategy.getCurrentUserObject();
+            if (user instanceof User) {
+                return (User) user;
+            }
+        }      
+        return new GuestPassenger(); // 로그인 안 되어 있으면 Guest로 간주
     }
 
     public String getCurrentStrategyName() {

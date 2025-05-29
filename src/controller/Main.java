@@ -37,7 +37,7 @@ public class Main {
         AuthenticationStrategy agencyStrategy = new AgencyAuthenticationStrategy();
         
         LoginController loginController = new LoginController(userStrategy, agencyStrategy);
-        ReservationController reservationController = ReservationController.getReservationController();
+        ReservationController reservationController = ReservationController.getReservationController(loginController);
         reservationController.setLoadStrategy(new ReservationLoadStrategy());
         reservationController.setSaveStrategy(new ReservationSaveStrategy());
 

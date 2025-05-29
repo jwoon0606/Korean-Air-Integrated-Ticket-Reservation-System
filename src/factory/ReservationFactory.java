@@ -1,9 +1,13 @@
-package dto;
+package factory;
 
 
 import java.util.*;
 
-public class ReservationFormFactory {
+import dto.Flight;
+import dto.ReservationForm;
+import dto.ReservedFlight;
+
+public class ReservationFactory {
 	
     // 1. LineHandler 인터페이스 정의
     @FunctionalInterface
