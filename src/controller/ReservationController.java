@@ -102,59 +102,33 @@ public class ReservationController {
     }
 
     /**
-     * Performs the cancellation of the most recent booking.
-     * Removes the last reservation from the list and overwrites the file.
-     * @return The ReservationForm that was cancelled, or null if no reservation was found or an error occurred.
-     */
-    public ReservationForm deleteReservaton() {
-        List<ReservationForm> reservations = loadAllReservations();
-
-        if (reservations.isEmpty()) {
-            return null; 
-        }
-
-        ReservationForm cancelledForm = reservations.remove(reservations.size() - 1);
-
-        if (overwriteAllReservations(reservations)) {
-            return cancelledForm;
-        } else {
-            return null; 
-        }
-    }
-
-    /**
      * Deletes the most recent reservation for a specific user.
      * @param userEmail The email of the user whose reservation is to be cancelled.
      * @return The ReservationForm that was cancelled, or null if no reservation was found for the user or an error occurred.
      */
-    public ReservationForm deleteReservationForUser(String userEmail) {
+    public ReservationForm deleteReservation(String userEmail) {
         List<ReservationForm> allReservations = loadAllReservations();
         List<ReservationForm> userReservations = new ArrayList<>();
         ReservationForm reservationToCancel = null;
 
-        // Find all reservations for the given user and identify the last one
         int lastUserReservationIndexInAll = -1;
         for (int i = 0; i < allReservations.size(); i++) {
             ReservationForm r = allReservations.get(i);
             if (r.getEmail().equalsIgnoreCase(userEmail)) {
                 userReservations.add(r);
-                lastUserReservationIndexInAll = i; // Keep track of the last one found for this user
+                lastUserReservationIndexInAll = i; 
             }
         }
 
         if (userReservations.isEmpty() || lastUserReservationIndexInAll == -1) {
-            return null; // No reservations found for this user
+            return null; 
         }
 
-        // The reservation to cancel is the one at lastUserReservationIndexInAll
         reservationToCancel = allReservations.remove(lastUserReservationIndexInAll);
 
         if (overwriteAllReservations(allReservations)) {
             return reservationToCancel;
         } else {
-            // If saving fails, we should ideally add it back to maintain consistency.
-            // For simplicity here, we just return null indicating failure.
-            // To be robust, you might want to re-insert reservationToCancel at lastUserReservationIndexInAll
             return null; 
         }
     }
@@ -170,7 +144,7 @@ public class ReservationController {
             return false;
         }
         List<ReservationForm> reservations = loadAllReservations();
-        reservations.add(form); // Add to the end, or sort if order matters and is maintained
+        reservations.add(form);
         return overwriteAllReservations(reservations);
     }
 

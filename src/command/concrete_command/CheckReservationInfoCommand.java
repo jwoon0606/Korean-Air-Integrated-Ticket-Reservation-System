@@ -26,7 +26,7 @@ public class CheckReservationInfoCommand implements UndoableCommand{
         System.out.println();
         
         if (!loginController.isLoggedIn()) {
-            // 게스트 사용자의 예약 조회
+
             System.out.print("예약 ID를 입력하세요: ");
             String id = scanner.nextLine();
             System.out.print("비밀번호를 입력하세요: ");
@@ -40,7 +40,7 @@ public class CheckReservationInfoCommand implements UndoableCommand{
                 System.out.println("예약 정보를 찾을 수 없습니다.");
             }
         } else {
-            // 로그인된 사용자의 예약 조회
+    
             String email = loginController.getCurrentUser().getEmail();
             List<ReservationForm> reservations = reservationController.findReservationsByEmail(email);
 
@@ -58,7 +58,7 @@ public class CheckReservationInfoCommand implements UndoableCommand{
 
             System.out.print("상세 정보를 볼 예약 번호를 선택하세요: ");
             int idx = scanner.nextInt() - 1;
-            scanner.nextLine(); // consume newline
+            scanner.nextLine(); 
             if (idx >= 0 && idx < reservations.size()) {
                 System.out.println(reservations.get(idx));
             } else {
@@ -79,7 +79,7 @@ public class CheckReservationInfoCommand implements UndoableCommand{
 
     @Override
     public void undo() {
-        // undo를 할 필요는 없고 stack에서 pop을 하고 뒤로 돌아가기만 한다.
+
         System.out.println("Returning to the main menu.");
     }
 }

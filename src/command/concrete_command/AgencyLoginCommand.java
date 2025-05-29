@@ -34,9 +34,6 @@ public class AgencyLoginCommand implements UndoableCommand {
 
    @Override
     public void undo() {
-        // 로그인 명령을 취소하는 것은 로그아웃하는 것과 같습니다.
-        // 단, 현재 로그인된 사용자가 이 명령으로 로그인한 사용자인지 확인하는 로직이 필요할 수 있으나,
-        // 여기서는 LoginController의 logout 기능을 그대로 사용합니다.
         if (loginController.isLoggedIn()) {
             loginController.logout();
             System.out.println("Agency login undone (logged out).");

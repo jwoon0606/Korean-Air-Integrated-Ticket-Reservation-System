@@ -19,7 +19,7 @@ public class ExitCommand implements UndoableCommand {
     
     @Override
     public boolean canExecute(boolean isLoggedIn) {
-        return true; // 종료는 항상 가능
+        return true;
     }
     
     @Override
@@ -29,7 +29,6 @@ public class ExitCommand implements UndoableCommand {
 
     @Override
     public void undo() {
-        // 종료 명령은 undo할 수 없습니다.
         System.out.println("does not support undo.");
     }
 }

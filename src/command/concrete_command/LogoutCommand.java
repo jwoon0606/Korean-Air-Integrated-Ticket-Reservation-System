@@ -34,8 +34,6 @@ public class LogoutCommand implements UndoableCommand{
 
     @Override
     public void undo(){
-        // 로그아웃 명령의 undo는 지원하지 않음.
-        // CommandRegistry의 undoCommand에서 history 스택에서는 pop 됩니다.
         System.out.println("Undo for 'Logout' is not supported and has no effect.");
     }
 }

@@ -8,13 +8,12 @@ import user.RegisteredPassenger; // Added import
 
 public class DeleteReservationCommand implements UndoableCommand {
     private ReservationController reservationController;
-    private LoginController loginController; // Added
+    private LoginController loginController; 
     private ReservationForm lastCancelledReservation;
 
-    // Updated constructor
     public DeleteReservationCommand(ReservationController reservationController, LoginController loginController) {
         this.reservationController = reservationController;
-        this.loginController = loginController; // Added
+        this.loginController = loginController; 
     }
 
     @Override
@@ -33,8 +32,7 @@ public class DeleteReservationCommand implements UndoableCommand {
         }
         String userEmail = currentUser.getEmail();
         
-        // Call a new method in ReservationController
-        this.lastCancelledReservation = reservationController.deleteReservationForUser(userEmail); 
+        this.lastCancelledReservation = reservationController.deleteReservation(userEmail); 
 
         if (this.lastCancelledReservation != null) {
             System.out.println("\nYour most recent reservation has been canceled.");
@@ -59,7 +57,6 @@ public class DeleteReservationCommand implements UndoableCommand {
 
     @Override
     public boolean canExecute(boolean isLoggedIn) {
-        // Only allow execution if a user is logged in
         return isLoggedIn; 
     }
 
