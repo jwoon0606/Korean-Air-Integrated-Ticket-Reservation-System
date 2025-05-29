@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
+
+import dto.Mileage;
 
 public class UserAuthenticationStrategy implements AuthenticationStrategy {
     private ArrayList<RegisteredPassenger> userList;
@@ -37,28 +40,39 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
         System.out.println("Sign up page");
         this.lastRegisteredUser = null;
         int newId = ++this.id;
+
         System.out.print("name? "); String name = sc.nextLine();
         System.out.print("email? "); String email = sc.nextLine();
-        
+
         for (RegisteredPassenger user : userList) {
             if (user.getEmail().equals(email)) {
-                System.out.println("This email is already registered. Please use another email.\\n");
+                System.out.println("This email is already registered. Please use another email.\n");
                 return false;
             }
         }
-        
+
         System.out.print("password? "); String password = sc.nextLine();
         System.out.print("phone number? "); String phoneNumber = sc.nextLine();
         System.out.print("gender? "); String gender = sc.nextLine();
         System.out.print("birth date? "); String birthDate = sc.nextLine();
 
-        RegisteredPassenger newUser = new RegisteredPassenger(newId, name, email, password, phoneNumber, gender, birthDate);
+        // 먼저 RegisteredPassenger 객체 생성
+        RegisteredPassenger newUser = new RegisteredPassenger(
+                newId, name, email, password, phoneNumber, gender, birthDate
+        );
+
+        // Mileage 정보 추가 (airline은 비워두고 멤버십 번호만 부여)
+        String membershipNumber = UUID.randomUUID().toString().substring(0, 8);
+        newUser.setMileage(new Mileage("", membershipNumber));
+
         userList.add(newUser);
         System.out.println(newUser.getName() + " registered successfully");
+
         saveData();
         this.lastRegisteredUser = newUser;
         return true;
     }
+
 
     @Override
     public Object getLastRegisteredUser() {
@@ -79,6 +93,11 @@ public class UserAuthenticationStrategy implements AuthenticationStrategy {
             System.out.println("Phone number: " + currentUser.getPhoneNumber());
             System.out.println("Gender: " + currentUser.getGender());
             System.out.println("Birth date: " + currentUser.getBirthDay() + "\n");
+            if (currentUser.getMileage() != null) {
+                System.out.println("Membership Number: " + currentUser.getMileage().getMembershipNumber());
+            } else {
+                System.out.println("Membership Number: (none)");
+            }
         } else {
             System.out.println("No user is logged in.\n");
         }
