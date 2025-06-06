@@ -1,10 +1,7 @@
 package factory;
-
 import dto.ReservationForm;
 import dto.ReservedFlight;
 import java.util.*;
-
-import dto.Flight;
 
 public abstract class ReservationFactory {
 

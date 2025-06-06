@@ -4,7 +4,6 @@ Birth Date: 1999-11-23
 Gender: M
 Contact: 01066784110, aaaa
 Language: ko
-Guest Password: 123
 Flight: FL123, 2025-06-01, Republic of Korea → United States
 Class: Economy, Seats Reserved: 1
 Flight: FL125, 2025-06-10, United States → Republic of Korea
@@ -16,7 +15,6 @@ Birth Date: 1996
 Gender: m
 Contact: 010333, tkdtp123
 Language: kor
-Guest Password: 1234
 Mileage: 123
 Membership Number: 124124
 Flight: FL123, 2025-06-01, Republic of Korea → United States
@@ -44,6 +42,32 @@ Contact: 010-3371-3978, tkdtp123@naver.com
 Language: kor
 Mileage: korair
 Membership Number: 7577369c
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: 2f4a941a-44c6-44b0-9eb1-f15222e8e431
+Passenger Name: minchan
+Birth Date: 1999-11-23
+Gender: M
+Contact: 123, 123
+Language: ko
+Mileage: aaa
+Membership Number: 123
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+----
+Reservation ID: bedea1a7-4ba8-4c21-9fcd-379caf92db0a
+Passenger Name: aaa
+Birth Date: 123
+Gender: aaa
+Contact: 123, aaa
+Language: ko
+Mileage: aaa
+Membership Number: 1f301d96
 Flight: FL123, 2025-06-01, Republic of Korea → United States
 Class: Economy, Seats Reserved: 1
 Flight: FL125, 2025-06-10, United States → Republic of Korea

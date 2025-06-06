@@ -1,9 +1,5 @@
 package strategy;
-
-import dto.Flight;
 import dto.ReservationForm;
-import dto.ReservedFlight;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
