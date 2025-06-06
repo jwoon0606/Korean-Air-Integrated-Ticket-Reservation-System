@@ -24,10 +24,17 @@ public class ReservationForm {
 
     private String registerGuestPassword;
     private ArrayList<ReservedFlight> reservedFlights;
+    
+    // 추가 서비스 정보 (Decorator Pattern 적용)
+    private List<String> additionalServices;
+    private double totalAdditionalServicePrice;
 
     /*클래스의 기본 생성자(no-argument constructor): 빈 ReservationForm 객체를 먼저 생성한 다음,
     라인을 하나씩 파싱하면서 setXxx() 메서드를 호출해 필드 값을 설정하기 때문 */
-    public ReservationForm() {}  
+    public ReservationForm() {
+        this.additionalServices = new ArrayList<>();
+        this.totalAdditionalServicePrice = 0.0;
+    }  
     
     
     public ReservationForm(String id, String name, String gender, String birthDate, String carrierForMileageAccumulation, String membershipNumber, String mobileNumber, String email, String language, String registerGuestPassword, ArrayList<ReservedFlight> reservedFlights) {
@@ -42,6 +49,8 @@ public class ReservationForm {
         this.language = language;
         this.registerGuestPassword = registerGuestPassword;
         this.reservedFlights = reservedFlights;
+        this.additionalServices = new ArrayList<>();
+        this.totalAdditionalServicePrice = 0.0;
     }
 
     public String getId() {
@@ -132,6 +141,22 @@ public class ReservationForm {
         this.reservedFlights = reservedFlights;
     }
     
+    public List<String> getAdditionalServices() {
+        return additionalServices;
+    }
+    
+    public void setAdditionalServices(List<String> additionalServices) {
+        this.additionalServices = additionalServices;
+    }
+    
+    public double getTotalAdditionalServicePrice() {
+        return totalAdditionalServicePrice;
+    }
+    
+    public void setTotalAdditionalServicePrice(double totalAdditionalServicePrice) {
+        this.totalAdditionalServicePrice = totalAdditionalServicePrice;
+    }
+    
     /**
      * ReservationForm 객체의 정보를 파일에 저장할 형식의 문자열 리스트로 변환합니다.
      * 이 메소드는 ReservationController의 overwriteAllReservations에서 사용되며,
@@ -160,6 +185,10 @@ public class ReservationForm {
             lines.add("Flight: " + f.getFlightNumber() + ", " + f.getDepartureDate() + ", " + f.getDeparture() + " → " + f.getDestination());
             lines.add("Class: " + rf.getCabinClass() + ", Seats Reserved: " + rf.getSeatCount());
         }
+        if (!additionalServices.isEmpty()) {
+            lines.add("Additional Services: " + String.join(", ", additionalServices));
+            lines.add("Additional Service Price: $" + String.format("%.2f", totalAdditionalServicePrice));
+        }
         return lines;
     }
 
@@ -174,6 +203,10 @@ public class ReservationForm {
           .append("Flights:\n");
         for (ReservedFlight flight : reservedFlights) {
             sb.append(flight.toString()).append("\n");
+        }
+        if (!additionalServices.isEmpty()) {
+            sb.append("Additional Services: ").append(String.join(", ", additionalServices)).append("\n");
+            sb.append("Additional Service Price: $").append(String.format("%.2f", totalAdditionalServicePrice)).append("\n");
         }
         return sb.toString();
     }

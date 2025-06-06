@@ -8,6 +8,9 @@ import strategy.FlightLoadStrategy;
 import strategy.LoadStrategy;
 import strategy.SaveStrategy;
 import factory.*;
+import service.ReservationService;
+import service.BasicReservationService;
+import service.decorator.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,8 +18,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class ReservationController {
-    private LoadStrategy loadStrategy;
-    private SaveStrategy saveStrategy;
+    private LoadStrategy<ReservationForm> loadStrategy;
+    private SaveStrategy<ReservationForm> saveStrategy;
     private static ReservationController reservationController = null;
     private static final String RESERVATION_FILE = "src/file/ReservationList.txt"; 
     private final Scanner scanner;
@@ -35,11 +38,11 @@ public class ReservationController {
             List.of("South Africa", "Egypt", "Nigeria")
     );
 
-    public void setLoadStrategy(LoadStrategy loadStrategy) {
+    public void setLoadStrategy(LoadStrategy<ReservationForm> loadStrategy) {
         this.loadStrategy = loadStrategy;
     }
 
-    public void setSaveStrategy(SaveStrategy saveStrategy) {
+    public void setSaveStrategy(SaveStrategy<ReservationForm> saveStrategy) {
         this.saveStrategy = saveStrategy;
     }
 
@@ -57,7 +60,7 @@ public class ReservationController {
         flightController.setLoadStrategy(new FlightLoadStrategy());
     }
 
- // 1. 텍스트 파일에서 ReservationForm 목록 생성
+    // 1. 텍스트 파일에서 ReservationForm 목록 생성
     public List<ReservationForm> loadAllReservations() {
         return loadStrategy.load();
     }
@@ -114,6 +117,36 @@ public class ReservationController {
         // 팩토리를 통해 예약 정보 생성
         ReservationFactory factory = getFactoryForCurrentUser();  // 현재 로그인된 사용자 기준
         ReservationForm form = factory.create(scanner, flights);
+
+        // 추가 서비스 선택 (Decorator Pattern 적용)
+        System.out.println("\n=== 추가 서비스 선택 ===");
+        System.out.println("부가서비스를 추가하시겠습니까? (yes/no)");
+        String addServices = scanner.nextLine().trim();
+        
+        if (addServices.equalsIgnoreCase("yes")) {
+            ReservationService service = new BasicReservationService(flights);
+            
+            // 기내식 서비스 추가
+            service = addMealServiceIfRequested(service);
+            
+            // 수하물 서비스 추가
+            service = addBaggageServiceIfRequested(service);
+            
+            // 라운지 서비스 추가
+            service = addLoungeServiceIfRequested(service);
+            
+            // 추가 서비스 정보를 ReservationForm에 저장
+            form.setAdditionalServices(service.getFeatures());
+            
+            // 기본 항공편 가격을 제외한 추가 서비스 비용만 계산
+            double basePrice = new BasicReservationService(flights).calculatePrice();
+            double additionalPrice = service.calculatePrice() - basePrice;
+            form.setTotalAdditionalServicePrice(additionalPrice);
+            
+            System.out.println("\n=== 서비스 요약 ===");
+            System.out.println(service.getDescription());
+            System.out.println("추가 서비스 비용: $" + String.format("%.2f", additionalPrice));
+        }
 
         // 예약 정보 저장
         saveReservationToFile(form);
@@ -445,6 +478,128 @@ public class ReservationController {
         };
     }
 
+
+    // Decorator Pattern service addition methods
+    private ReservationService addMealServiceIfRequested(ReservationService service) {
+        System.out.println("기내식 서비스를 추가하시겠습니까? (yes/no)");
+        String choice = scanner.nextLine().trim();
+        
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("기내식 종류를 선택하세요:");
+            System.out.println("1. 일반식 (+$25)");
+            System.out.println("2. 채식 (+$25)");
+            System.out.println("3. 할랄식 (+$30)");
+            System.out.print("선택 (1-3): ");
+            
+            int mealChoice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            
+            String mealType;
+            double mealPrice;
+            
+            switch (mealChoice) {
+                case 1:
+                    mealType = "일반식";
+                    mealPrice = 25.0;
+                    break;
+                case 2:
+                    mealType = "채식";
+                    mealPrice = 25.0;
+                    break;
+                case 3:
+                    mealType = "할랄식";
+                    mealPrice = 30.0;
+                    break;
+                default:
+                    mealType = "일반식";
+                    mealPrice = 25.0;
+                    break;
+            }
+            
+            return new MealDecorator(service, mealType, mealPrice);
+        }
+        
+        return service;
+    }
+    
+    private ReservationService addBaggageServiceIfRequested(ReservationService service) {
+        System.out.println("추가 수하물 서비스를 이용하시겠습니까? (yes/no)");
+        String choice = scanner.nextLine().trim();
+        
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("추가 수하물을 몇 개 추가하시겠습니까?");
+            System.out.println("1. 1개 (+$50)");
+            System.out.println("2. 2개 (+$90)");
+            System.out.println("3. 3개 (+$120)");
+            System.out.print("선택 (1-3): ");
+            
+            int baggageChoice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            
+            int bags;
+            double bagPrice;
+            
+            switch (baggageChoice) {
+                case 1:
+                    bags = 1;
+                    bagPrice = 50.0;
+                    break;
+                case 2:
+                    bags = 2;
+                    bagPrice = 45.0; // $90 / 2 bags
+                    break;
+                case 3:
+                    bags = 3;
+                    bagPrice = 40.0; // $120 / 3 bags
+                    break;
+                default:
+                    bags = 1;
+                    bagPrice = 50.0;
+                    break;
+            }
+            
+            return new BaggageDecorator(service, bags, bagPrice);
+        }
+        
+        return service;
+    }
+    
+    private ReservationService addLoungeServiceIfRequested(ReservationService service) {
+        System.out.println("라운지 접근 서비스를 이용하시겠습니까? (yes/no)");
+        String choice = scanner.nextLine().trim();
+        
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("라운지 타입을 선택하세요:");
+            System.out.println("1. 비즈니스 라운지 (+$30)");
+            System.out.println("2. 프리미엄 라운지 (+$60)");
+            System.out.print("선택 (1-2): ");
+            
+            int loungeChoice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            
+            String loungeType;
+            double loungePrice;
+            
+            switch (loungeChoice) {
+                case 1:
+                    loungeType = "비즈니스 라운지";
+                    loungePrice = 30.0;
+                    break;
+                case 2:
+                    loungeType = "프리미엄 라운지";
+                    loungePrice = 60.0;
+                    break;
+                default:
+                    loungeType = "비즈니스 라운지";
+                    loungePrice = 30.0;
+                    break;
+            }
+            
+            return new LoungAccessDecorator(service, loungeType, loungePrice);
+        }
+        
+        return service;
+    }
 
     private void saveReservationToFile(ReservationForm form) {
         saveStrategy.save(form);

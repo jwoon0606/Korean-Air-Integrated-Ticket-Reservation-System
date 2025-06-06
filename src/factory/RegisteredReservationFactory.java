@@ -94,6 +94,28 @@ public class RegisteredReservationFactory extends ReservationFactory {
                         last.setCabinClass(seatParts[0].split(": ")[1].trim());
                         last.setSeatCount(Integer.parseInt(seatParts[1].split(": ")[1].trim()));
                     }
+                } else if (line.startsWith("Additional Services: ")) {
+                    // 추가 서비스 파싱
+                    String servicesText = extractValue(line);
+                    List<String> services = new ArrayList<>();
+                    if (servicesText != null && !servicesText.trim().isEmpty()) {
+                        String[] serviceArray = servicesText.split(", ");
+                        for (String service : serviceArray) {
+                            services.add(service.trim());
+                        }
+                    }
+                    form.setAdditionalServices(services);
+                } else if (line.startsWith("Additional Service Price: ")) {
+                    // 추가 서비스 가격 파싱
+                    String priceText = extractValue(line);
+                    if (priceText != null && priceText.startsWith("$")) {
+                        try {
+                            double price = Double.parseDouble(priceText.substring(1));
+                            form.setTotalAdditionalServicePrice(price);
+                        } catch (NumberFormatException e) {
+                            form.setTotalAdditionalServicePrice(0.0);
+                        }
+                    }
                 }
             }
         }
