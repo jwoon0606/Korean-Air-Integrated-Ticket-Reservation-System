@@ -25,9 +25,9 @@ public class BasicReservationService implements ReservationService {
     
     @Override
     public String getDescription() {
-        StringBuilder desc = new StringBuilder("기본 항공편 예약");
+        StringBuilder desc = new StringBuilder("Basic flight reservation");
         if (flights != null && !flights.isEmpty()) {
-            desc.append(" (").append(flights.size()).append("개 항공편)");
+            desc.append(" (").append(flights.size()).append(" flights)");
         }
         return desc.toString();
     }
@@ -39,13 +39,13 @@ public class BasicReservationService implements ReservationService {
     
     @Override
     public List<String> getFeatures() {
-        return Arrays.asList("항공편 좌석 예약");
+        return Arrays.asList("Flight seat reservation");
     }
     
     @Override
     public ReservationForm processService(ReservationForm form) {
-        // 기본 서비스는 추가 처리 없이 그대로 반환
-        System.out.println("[Basic Service] 기본 예약 서비스 처리 완료");
+        // Basic service returns form without additional processing
+        System.out.println("[Basic Service] Basic reservation service processing completed");
         return form;
     }
     
@@ -75,13 +75,5 @@ public class BasicReservationService implements ReservationService {
         
         return total;
     }
-    
-    // Getter methods
-    public List<ReservedFlight> getFlights() {
-        return flights;
-    }
-    
-    public double getBasePrice() {
-        return basePrice;
-    }
+
 }

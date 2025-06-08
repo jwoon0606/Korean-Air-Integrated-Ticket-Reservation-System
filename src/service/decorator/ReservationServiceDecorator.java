@@ -41,11 +41,4 @@ public abstract class ReservationServiceDecorator implements ReservationService 
     public ReservationForm processService(ReservationForm form) {
         return reservationService.processService(form);
     }
-    
-    /**
-     * 래핑된 서비스 반환 (테스트나 디버깅용)
-     */
-    protected ReservationService getWrappedService() {
-        return reservationService;
-    }
 }

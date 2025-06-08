@@ -19,22 +19,22 @@ public class BaggageDecorator extends ReservationServiceDecorator {
         this.additionalBags = Math.max(0, additionalBags);
         this.bagPrice = Math.max(0, bagPrice);
         this.maxWeight = 23.0; // 기본 최대 중량 23kg
-        this.bagType = "일반 수하물";
+        this.bagType = "Standard baggage";
     }
     
     public BaggageDecorator(ReservationService reservationService, int additionalBags, double bagPrice, 
                            double maxWeight, String bagType) {
         this(reservationService, additionalBags, bagPrice);
         this.maxWeight = Math.max(0, maxWeight);
-        this.bagType = bagType != null ? bagType : "일반 수하물";
+        this.bagType = bagType != null ? bagType : "Standard baggage";
     }
     
     @Override
     public String getDescription() {
         String baseDesc = super.getDescription();
-        String bagDesc = " + 추가수하물 " + additionalBags + "개";
+        String bagDesc = " + Extra baggage " + additionalBags + " bags";
         
-        if (!bagType.equals("일반 수하물")) {
+        if (!bagType.equals("Standard baggage")) {
             bagDesc += " (" + bagType + ")";
         }
         
@@ -50,8 +50,8 @@ public class BaggageDecorator extends ReservationServiceDecorator {
     public List<String> getFeatures() {
         List<String> features = super.getFeatures();
         
-        String bagFeature = "추가 수하물: " + additionalBags + "개 (각 " + maxWeight + "kg 이하)";
-        if (!bagType.equals("일반 수하물")) {
+        String bagFeature = "Extra baggage: " + additionalBags + " bags (up to " + maxWeight + "kg each)";
+        if (!bagType.equals("Standard baggage")) {
             bagFeature += " - " + bagType;
         }
         
@@ -64,16 +64,16 @@ public class BaggageDecorator extends ReservationServiceDecorator {
         // 먼저 기존 서비스들을 처리
         ReservationForm processedForm = super.processService(form);
         
-        // 수하물 서비스 처리
+        // Process baggage service
         if (additionalBags > 0) {
             double totalBagCost = additionalBags * bagPrice;
-            System.out.println("[Baggage Service] 추가 수하물 서비스: " + additionalBags + "개");
-            System.out.println("[Baggage Service] 수하물 타입: " + bagType);
-            System.out.println("[Baggage Service] 최대 중량: " + maxWeight + "kg/개");
-            System.out.println("[Baggage Service] 총 수하물 요금: $" + totalBagCost);
+            System.out.println("[Baggage Service] Extra baggage service: " + additionalBags + " bags");
+            System.out.println("[Baggage Service] Baggage type: " + bagType);
+            System.out.println("[Baggage Service] Max weight: " + maxWeight + "kg per bag");
+            System.out.println("[Baggage Service] Total baggage fee: $" + totalBagCost);
             
-            // 실제로는 여기서 수하물 정보를 예약 폼에 추가하거나
-            // 수하물 관리 시스템에 정보를 전송하는 로직이 들어갈 수 있음
+            // In practice, baggage information would be added to the reservation form
+            // or sent to the baggage management system
         }
         
         return processedForm;

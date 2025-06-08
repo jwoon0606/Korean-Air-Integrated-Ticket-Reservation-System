@@ -33,7 +33,7 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
     @Override
     public String getDescription() {
         String baseDesc = super.getDescription();
-        String loungeDesc = " + " + loungeType + " 이용";
+        String loungeDesc = " + " + loungeType + " access";
         
         if (!loungeLocation.isEmpty()) {
             loungeDesc += " (" + loungeLocation + ")";
@@ -51,11 +51,11 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
     public List<String> getFeatures() {
         List<String> features = super.getFeatures();
         
-        String loungeFeature = "라운지 이용: " + loungeType;
+        String loungeFeature = "Lounge access: " + loungeType;
         if (!loungeLocation.isEmpty()) {
             loungeFeature += " - " + loungeLocation;
         }
-        loungeFeature += " (" + validHours + "시간 이용 가능)";
+        loungeFeature += " (" + validHours + " hours available)";
         
         features.add(loungeFeature);
         
@@ -74,21 +74,21 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
         // 먼저 기존 서비스들을 처리
         ReservationForm processedForm = super.processService(form);
         
-        // 라운지 이용 서비스 처리
-        System.out.println("[Lounge Access Service] 라운지 이용권 발급: " + loungeType);
-        System.out.println("[Lounge Access Service] 위치: " + loungeLocation);
-        System.out.println("[Lounge Access Service] 이용 시간: " + validHours + "시간");
-        System.out.println("[Lounge Access Service] 이용료: $" + loungePrice);
+        // Process lounge access service
+        System.out.println("[Lounge Access Service] Lounge pass issued: " + loungeType);
+        System.out.println("[Lounge Access Service] Location: " + loungeLocation);
+        System.out.println("[Lounge Access Service] Access hours: " + validHours + " hours");
+        System.out.println("[Lounge Access Service] Fee: $" + loungePrice);
         
         if (amenities != null && !amenities.isEmpty()) {
-            System.out.println("[Lounge Access Service] 이용 가능 시설:");
+            System.out.println("[Lounge Access Service] Available facilities:");
             for (String amenity : amenities) {
                 System.out.println("  • " + amenity);
             }
         }
         
-        // 실제로는 여기서 라운지 이용권을 발급하거나
-        // 라운지 관리 시스템에 고객 정보를 등록하는 로직이 들어갈 수 있음
+        // In practice, lounge passes would be issued
+        // or customer information would be registered in the lounge management system
         
         return processedForm;
     }
@@ -100,11 +100,11 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
         if (loungeType == null) return "";
         
         return switch (loungeType.toLowerCase()) {
-            case "비즈니스 라운지", "business lounge" -> "출발 게이트 근처";
-            case "퍼스트 라운지", "first class lounge" -> "VIP 전용 구역";
-            case "스카이 라운지", "sky lounge" -> "공항 중앙";
-            case "프리미엄 라운지", "premium lounge" -> "면세점 인근";
-            default -> "일반 구역";
+            case "비즈니스 라운지", "business lounge" -> "Near departure gates";
+            case "퍼스트 라운지", "first class lounge" -> "VIP exclusive area";
+            case "스카이 라운지", "sky lounge" -> "Airport central";
+            case "프리미엄 라운지", "premium lounge" -> "Near duty-free shops";
+            default -> "General area";
         };
     }
     
@@ -116,16 +116,16 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
         
         return switch (loungeType.toLowerCase()) {
             case "퍼스트 라운지", "first class lounge" -> List.of(
-                "개인 스위트룸", "프리미엄 식음료", "컨시어지 서비스", 
-                "스파 서비스", "비즈니스 센터", "개인 샤워실"
+                "Private suite rooms", "Premium food & beverages", "Concierge service", 
+                "Spa services", "Business center", "Private shower rooms"
             );
             case "비즈니스 라운지", "business lounge" -> List.of(
-                "비즈니스 식음료", "회의실", "Wi-Fi", "샤워실", "휴식 공간"
+                "Business refreshments", "Meeting rooms", "Wi-Fi", "Shower facilities", "Rest areas"
             );
             case "스카이 라운지", "sky lounge" -> List.of(
-                "전망 좋은 휴식 공간", "기본 식음료", "Wi-Fi", "충전 스테이션"
+                "Scenic rest areas", "Basic refreshments", "Wi-Fi", "Charging stations"
             );
-            default -> List.of("기본 휴식 공간", "Wi-Fi");
+            default -> List.of("Basic rest area", "Wi-Fi");
         };
     }
     

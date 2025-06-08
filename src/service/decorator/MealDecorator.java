@@ -46,10 +46,10 @@ public class MealDecorator extends ReservationServiceDecorator {
     @Override
     public List<String> getFeatures() {
         List<String> features = super.getFeatures();
-        String mealFeature = "기내식: " + mealType;
+        String mealFeature = "In-flight meal: " + mealType;
         
         if (!specialRequirements.isEmpty()) {
-            mealFeature += " (특별요청: " + specialRequirements + ")";
+            mealFeature += " (Special request: " + specialRequirements + ")";
         }
         
         features.add(mealFeature);
@@ -58,18 +58,18 @@ public class MealDecorator extends ReservationServiceDecorator {
     
     @Override
     public ReservationForm processService(ReservationForm form) {
-        // 먼저 기존 서비스들을 처리
+        // Process existing services first
         ReservationForm processedForm = super.processService(form);
         
-        // 기내식 서비스 처리
-        System.out.println("[Meal Service] 기내식 서비스 추가: " + mealType + " ($" + mealPrice + ")");
+        // Process meal service
+        System.out.println("[Meal Service] In-flight meal service added: " + mealType + " ($" + mealPrice + ")");
         
         if (!specialRequirements.isEmpty()) {
-            System.out.println("[Meal Service] 특별 요청사항: " + specialRequirements);
+            System.out.println("[Meal Service] Special requirements: " + specialRequirements);
         }
         
-        // 실제로는 여기서 예약 폼에 기내식 정보를 추가하거나 
-        // 외부 시스템에 기내식 주문을 전송하는 로직이 들어갈 수 있음
+        // In practice, meal information would be added to the reservation form
+        // or meal orders would be sent to external systems
         
         return processedForm;
     }

@@ -119,8 +119,8 @@ public class ReservationController {
         ReservationForm form = factory.create(scanner, flights);
 
         // 추가 서비스 선택 (Decorator Pattern 적용)
-        System.out.println("\n=== 추가 서비스 선택 ===");
-        System.out.println("부가서비스를 추가하시겠습니까? (yes/no)");
+        System.out.println("\n=== additional service ===");
+        System.out.println("Would you like to add additional services? (yes/no)");
         String addServices = scanner.nextLine().trim();
         
         if (addServices.equalsIgnoreCase("yes")) {
@@ -143,9 +143,9 @@ public class ReservationController {
             double additionalPrice = service.calculatePrice() - basePrice;
             form.setTotalAdditionalServicePrice(additionalPrice);
             
-            System.out.println("\n=== 서비스 요약 ===");
+            System.out.println("\n=== service info ===");
             System.out.println(service.getDescription());
-            System.out.println("추가 서비스 비용: $" + String.format("%.2f", additionalPrice));
+            System.out.println("additional service cost: $" + String.format("%.2f", additionalPrice));
         }
 
         // 예약 정보 저장
@@ -481,15 +481,15 @@ public class ReservationController {
 
     // Decorator Pattern service addition methods
     private ReservationService addMealServiceIfRequested(ReservationService service) {
-        System.out.println("기내식 서비스를 추가하시겠습니까? (yes/no)");
+        System.out.println("Would you like to add an in-flight meal service? (yes/no)");
         String choice = scanner.nextLine().trim();
         
         if (choice.equalsIgnoreCase("yes")) {
-            System.out.println("기내식 종류를 선택하세요:");
-            System.out.println("1. 일반식 (+$25)");
-            System.out.println("2. 채식 (+$25)");
-            System.out.println("3. 할랄식 (+$30)");
-            System.out.print("선택 (1-3): ");
+            System.out.println("Select a meal type:");
+            System.out.println("1. Regular Meal (+$25)");
+            System.out.println("2. Vegetarian (+$25)");
+            System.out.println("3. Halal Meal (+$30)");
+            System.out.print("Choice (1-3): ");
             
             int mealChoice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -499,19 +499,19 @@ public class ReservationController {
             
             switch (mealChoice) {
                 case 1:
-                    mealType = "일반식";
+                    mealType = "Regular Meal";
                     mealPrice = 25.0;
                     break;
                 case 2:
-                    mealType = "채식";
+                    mealType = "Vegetarian";
                     mealPrice = 25.0;
                     break;
                 case 3:
-                    mealType = "할랄식";
+                    mealType = "Halal Meal";
                     mealPrice = 30.0;
                     break;
                 default:
-                    mealType = "일반식";
+                    mealType = "Regular Meal";
                     mealPrice = 25.0;
                     break;
             }
@@ -523,15 +523,15 @@ public class ReservationController {
     }
     
     private ReservationService addBaggageServiceIfRequested(ReservationService service) {
-        System.out.println("추가 수하물 서비스를 이용하시겠습니까? (yes/no)");
+        System.out.println("Would you like to add extra baggage service? (yes/no)");
         String choice = scanner.nextLine().trim();
         
         if (choice.equalsIgnoreCase("yes")) {
-            System.out.println("추가 수하물을 몇 개 추가하시겠습니까?");
-            System.out.println("1. 1개 (+$50)");
-            System.out.println("2. 2개 (+$90)");
-            System.out.println("3. 3개 (+$120)");
-            System.out.print("선택 (1-3): ");
+            System.out.println("How many extra bags would you like to add?");
+            System.out.println("1. 1 bag (+$50)");
+            System.out.println("2. 2 bags (+$90)");
+            System.out.println("3. 3 bags (+$120)");
+            System.out.print("Choice (1-3): ");
             
             int baggageChoice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -565,14 +565,14 @@ public class ReservationController {
     }
     
     private ReservationService addLoungeServiceIfRequested(ReservationService service) {
-        System.out.println("라운지 접근 서비스를 이용하시겠습니까? (yes/no)");
+        System.out.println("Would you like to add lounge access service? (yes/no)");
         String choice = scanner.nextLine().trim();
         
         if (choice.equalsIgnoreCase("yes")) {
-            System.out.println("라운지 타입을 선택하세요:");
-            System.out.println("1. 비즈니스 라운지 (+$30)");
-            System.out.println("2. 프리미엄 라운지 (+$60)");
-            System.out.print("선택 (1-2): ");
+            System.out.println("Select lounge type:");
+            System.out.println("1. Business Lounge (+$30)");
+            System.out.println("2. Premium Lounge (+$60)");
+            System.out.print("Choice (1-2): ");
             
             int loungeChoice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -582,15 +582,15 @@ public class ReservationController {
             
             switch (loungeChoice) {
                 case 1:
-                    loungeType = "비즈니스 라운지";
+                    loungeType = "Business Lounge";
                     loungePrice = 30.0;
                     break;
                 case 2:
-                    loungeType = "프리미엄 라운지";
+                    loungeType = "Premium Lounge";
                     loungePrice = 60.0;
                     break;
                 default:
-                    loungeType = "비즈니스 라운지";
+                    loungeType = "Business Lounge";
                     loungePrice = 30.0;
                     break;
             }

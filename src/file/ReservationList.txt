@@ -13,3 +13,33 @@ Class: Economy, Seats Reserved: 1
 Additional Services: 항공편 좌석 예약, 추가 수하물: 3개 (각 23.0kg 이하), 라운지 이용: 프리미엄 라운지 - 면세점 인근 (4시간 이용 가능),   • 기본 휴식 공간,   • Wi-Fi
 Additional Service Price: $180.00
 ----
+Reservation ID: 4bf2dc0a-215c-40ab-ab75-889a503e734d
+Passenger Name: aaa
+Birth Date: 123
+Gender: aaa
+Contact: 123, aaa
+Language: ko
+Mileage: aaa
+Membership Number: e79b8d28
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+Additional Services: 항공편 좌석 예약, 기내식: 할랄식, 추가 수하물: 3개 (각 23.0kg 이하)
+Additional Service Price: $150.00
+----
+Reservation ID: fd2d8c84-b2f1-45f2-8809-0ce26091ed31
+Passenger Name: aaa
+Birth Date: 123
+Gender: aaa
+Contact: 123, aaa
+Language: ko
+Mileage: aaa
+Membership Number: 0c3fc726
+Flight: FL123, 2025-06-01, Republic of Korea → United States
+Class: Economy, Seats Reserved: 1
+Flight: FL125, 2025-06-10, United States → Republic of Korea
+Class: Economy, Seats Reserved: 1
+Additional Services: 항공편 좌석 예약, 기내식: Regular Meal, 추가 수하물: 2개 (각 23.0kg 이하), 라운지 이용: Premium Lounge - 면세점 인근 (4시간 이용 가능),   • 기본 휴식 공간,   • Wi-Fi
+Additional Service Price: $175.00
+----
