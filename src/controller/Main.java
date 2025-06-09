@@ -46,6 +46,7 @@ public class Main {
         invoker.setCommand(7, new BookFlightCommand(reservationController, loginController)); // Pass LoginController to BookFlightCommand
         invoker.setCommand(8, new CheckReservationInfoCommand(loginController, reservationController));
         invoker.setCommand(9, new DeleteReservationCommand(reservationController, loginController)); // Pass LoginController to DeleteReservationCommand
+        invoker.setCommand(10, new IssueTicketCommand(loginController, reservationController));
         invoker.setCommand(15, new ThemeSwitchCommand(themeController));
 
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
