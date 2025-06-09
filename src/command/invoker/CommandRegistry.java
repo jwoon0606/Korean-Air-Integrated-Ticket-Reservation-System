@@ -91,10 +91,10 @@ public class CommandRegistry {
     private Integer[] getMenuNumbersBasedOnLogin(boolean isUserLoggedIn) {
         if (isUserLoggedIn) {
    
-            return new Integer[]{0, 5, 6, 7, 8, 9}; 
+            return new Integer[]{0, 5, 6, 7, 8, 9, 15};
         } else {
        
-            return new Integer[]{0, 1, 2, 3, 4, 7, 8}; 
+            return new Integer[]{0, 1, 2, 3, 4, 7, 8, 15};
         }
     }
 }

@@ -1,16 +1,8 @@
 package controller;
 
 import java.util.Scanner;
-import command.concrete_command.AgencyLoginCommand;
-import command.concrete_command.AgencySignUpCommand;
-import command.concrete_command.BookFlightCommand;
-import command.concrete_command.CheckReservationInfoCommand;
-import command.concrete_command.DeleteReservationCommand;
-import command.concrete_command.ExitCommand;
-import command.concrete_command.LoginCommand;
-import command.concrete_command.LogoutCommand;
-import command.concrete_command.SignUpCommand;
-import command.concrete_command.ViewUserInfoCommand;
+
+import command.concrete_command.*;
 import command.invoker.CommandRegistry;
 import strategy.AgencyAuthenticationStrategy;
 import strategy.AuthenticationStrategy;
@@ -40,6 +32,7 @@ public class Main {
         ReservationController reservationController = ReservationController.getReservationController(loginController);
         reservationController.setLoadStrategy(new ReservationLoadStrategy(loginController));
         reservationController.setSaveStrategy(new ReservationSaveStrategy());
+        ThemeController themeController = new ThemeController();
 
         CommandRegistry invoker = new CommandRegistry();
 
@@ -53,11 +46,13 @@ public class Main {
         invoker.setCommand(7, new BookFlightCommand(reservationController, loginController)); // Pass LoginController to BookFlightCommand
         invoker.setCommand(8, new CheckReservationInfoCommand(loginController, reservationController));
         invoker.setCommand(9, new DeleteReservationCommand(reservationController, loginController)); // Pass LoginController to DeleteReservationCommand
+        invoker.setCommand(15, new ThemeSwitchCommand(themeController));
 
         System.out.println("Korean Air Integrated Ticket Reservation System(KTR)\n");
         
         // 프로그램 메인 루프
         while(programRunningState[0]) {
+            themeController.alertState();
             invoker.displayMenu(loginController.isLoggedIn());
             System.out.println("-1. Undo last operation"); // Option to undo the previous action
             
