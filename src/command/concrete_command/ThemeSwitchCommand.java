@@ -25,7 +25,7 @@ public class ThemeSwitchCommand implements UndoableCommand {
     
     @Override
     public String getMenuText() {
-        return "15. Switch Theme mode(dark/white)";
+        return "15. Switch Theme mode(dark/bright)";
     }
 
     @Override
