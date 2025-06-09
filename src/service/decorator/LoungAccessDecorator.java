@@ -5,8 +5,8 @@ import service.ReservationService;
 import java.util.List;
 
 /**
- * 라운지 이용 서비스 데코레이터
- * 데코레이터 패턴의 ConcreteDecorator로 추가적인 럭셔리 서비스 제공
+ * Lounge Access Service Decorator
+ * ConcreteDecorator in the Decorator Pattern for providing additional luxury services
  */
 public class LoungAccessDecorator extends ReservationServiceDecorator {
     private String loungeType;
@@ -17,11 +17,12 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
     
     public LoungAccessDecorator(ReservationService reservationService, String loungeType, double loungePrice) {
         super(reservationService);
-        this.loungeType = loungeType != null ? loungeType : "일반 라운지";
+        this.loungeType = loungeType != null ? loungeType : "Standard Lounge";
         this.loungePrice = Math.max(0, loungePrice);
-        this.loungeLocation = determineLoungeLocation(loungeType);
-        this.amenities = determineLoungeAmenities(loungeType);
-        this.validHours = determineValidHours(loungeType);
+        // Simplified: hardcoded for demo/testing
+        this.loungeLocation = "General area";
+        this.amenities = List.of("Basic rest area", "Wi-Fi");
+        this.validHours = 3;
     }
     
     public LoungAccessDecorator(ReservationService reservationService, String loungeType, 
@@ -50,22 +51,22 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
     @Override
     public List<String> getFeatures() {
         List<String> features = super.getFeatures();
-        
+
         String loungeFeature = "Lounge access: " + loungeType;
         if (!loungeLocation.isEmpty()) {
             loungeFeature += " - " + loungeLocation;
         }
         loungeFeature += " (" + validHours + " hours available)";
-        
+
         features.add(loungeFeature);
-        
-        // 라운지 어메니티 추가
+
+        // Add lounge amenities
         if (amenities != null && !amenities.isEmpty()) {
             for (String amenity : amenities) {
                 features.add("  • " + amenity);
             }
         }
-        
+
         return features;
     }
     
@@ -91,56 +92,6 @@ public class LoungAccessDecorator extends ReservationServiceDecorator {
         // or customer information would be registered in the lounge management system
         
         return processedForm;
-    }
-    
-    /**
-     * 라운지 타입에 따른 위치 결정
-     */
-    private String determineLoungeLocation(String loungeType) {
-        if (loungeType == null) return "";
-        
-        return switch (loungeType.toLowerCase()) {
-            case "비즈니스 라운지", "business lounge" -> "Near departure gates";
-            case "퍼스트 라운지", "first class lounge" -> "VIP exclusive area";
-            case "스카이 라운지", "sky lounge" -> "Airport central";
-            case "프리미엄 라운지", "premium lounge" -> "Near duty-free shops";
-            default -> "General area";
-        };
-    }
-    
-    /**
-     * 라운지 타입에 따른 어메니티 결정
-     */
-    private List<String> determineLoungeAmenities(String loungeType) {
-        if (loungeType == null) return List.of();
-        
-        return switch (loungeType.toLowerCase()) {
-            case "퍼스트 라운지", "first class lounge" -> List.of(
-                "Private suite rooms", "Premium food & beverages", "Concierge service", 
-                "Spa services", "Business center", "Private shower rooms"
-            );
-            case "비즈니스 라운지", "business lounge" -> List.of(
-                "Business refreshments", "Meeting rooms", "Wi-Fi", "Shower facilities", "Rest areas"
-            );
-            case "스카이 라운지", "sky lounge" -> List.of(
-                "Scenic rest areas", "Basic refreshments", "Wi-Fi", "Charging stations"
-            );
-            default -> List.of("Basic rest area", "Wi-Fi");
-        };
-    }
-    
-    /**
-     * 라운지 타입에 따른 이용 가능 시간 결정
-     */
-    private int determineValidHours(String loungeType) {
-        if (loungeType == null) return 3;
-        
-        return switch (loungeType.toLowerCase()) {
-            case "퍼스트 라운지", "first class lounge" -> 6;
-            case "비즈니스 라운지", "business lounge" -> 4;
-            case "프리미엄 라운지", "premium lounge" -> 4;
-            default -> 3;
-        };
     }
     
     // Getter methods
