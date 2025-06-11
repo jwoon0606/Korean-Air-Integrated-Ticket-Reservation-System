@@ -26,7 +26,8 @@ public class IssueTicketCommand implements UndoableCommand {
         User user = loginController.getCurrentUser();
         ReservationForm selectedForm = null;
 
-        if (user instanceof GuestPassenger) {
+        if (user == null || user instanceof GuestPassenger) {
+            // 로그인되지 않았거나 Guest일 경우: 예약번호 + 비밀번호 입력
             System.out.print("Reservation ID: ");
             String id = sc.nextLine();
             System.out.print("Reservation Password: ");
@@ -34,6 +35,7 @@ public class IssueTicketCommand implements UndoableCommand {
             selectedForm = reservationController.findByReservationIdAndPassword(id, password);
 
         } else if (user instanceof RegisteredPassenger rp) {
+            // 로그인된 Registered 사용자: 이메일로 예약 내역 조회
             List<ReservationForm> myReservations = reservationController.findReservationsByEmail(rp.getEmail());
 
             if (myReservations.isEmpty()) {
@@ -74,16 +76,13 @@ public class IssueTicketCommand implements UndoableCommand {
 
     @Override
     public boolean canExecute(boolean isLoggedIn) {
-        if (!isLoggedIn) {
-            System.out.println("[안내] 로그인이 필요합니다.");
-            return false;
-        }
+        // 로그인 여부에 관계없이 항상 실행 가능
         return true;
     }
 
     @Override
     public String getMenuText() {
-        return "10. Issue Ticket";
+        return "10. Issue Ticket(Check-in)";
     }
 
     @Override
