@@ -1,6 +1,7 @@
 package controller;
 
 import dto.*;
+import payment.*;
 import user.User;
 import user.GuestPassenger;
 import user.RegisteredPassenger;
@@ -123,6 +124,9 @@ public class ReservationController {
         System.out.println("Would you like to add additional services? (yes/no)");
         String addServices = scanner.nextLine().trim();
         
+        double basePrice = new BasicReservationService(flights).calculatePrice();
+        double additionalPrice = 0.0;
+        
         if (addServices.equalsIgnoreCase("yes")) {
             ReservationService service = new BasicReservationService(flights);
             
@@ -139,8 +143,7 @@ public class ReservationController {
             form.setAdditionalServices(service.getFeatures());
             
             // 기본 항공편 가격을 제외한 추가 서비스 비용만 계산
-            double basePrice = new BasicReservationService(flights).calculatePrice();
-            double additionalPrice = service.calculatePrice() - basePrice;
+            additionalPrice = service.calculatePrice() - basePrice;
             form.setTotalAdditionalServicePrice(additionalPrice);
             
             System.out.println("\n=== service info ===");
@@ -150,7 +153,10 @@ public class ReservationController {
 
         // 예약 정보 저장
         saveReservationToFile(form);
-
+        
+        PaymentProcessor processor = new PaymentProcessor();
+        processor.processPayment(form.getId(), basePrice + additionalPrice);
+        
         // 예약 ID 출력 (특히 Guest에게 필요)
         System.out.println("\nReservation completed and saved successfully!");
         System.out.println("Your reservation ID is: " + form.getId());
